@@ -11,12 +11,14 @@ import {
     Text,
     useColorModeValue,
     FormErrorMessage,
+    Alert,
+    AlertIcon,
 } from '@chakra-ui/react';
 import z, { ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { onLogin } from '../../utils';
-// import { redirect } from 'react-router-dom';
+import { api } from '../../utils';
+import { useEffect, useState } from 'react';
 
 interface SignInFormData {
     email: string;
@@ -24,6 +26,7 @@ interface SignInFormData {
 }
 
 export default function SignInForm() {
+    const [error, setError] = useState(false);
     const schema: ZodType<SignInFormData> = z.object({
         email: z.string().email(),
         password: z.string().min(8).max(255),
@@ -38,9 +41,21 @@ export default function SignInForm() {
     });
 
     async function onSubmit(values: SignInFormData) {
-        await onLogin(values);
-        // return redirect('/dashboard');
+        try {
+            await api.get('/sanctum/csrf-cookie');
+            await api.post('/login', values);
+        } catch (err: any) {
+            setError(true);
+        }
     }
+
+    useEffect(() => {
+        if (error) {
+            setTimeout(() => {
+                setError(false);
+            }, 3000);
+        }
+    }, [error]);
 
     return (
         <Flex
@@ -59,6 +74,12 @@ export default function SignInForm() {
                         </Link>{' '}
                         ✌️
                     </Text>
+                    {error && (
+                        <Alert status="error">
+                            <AlertIcon />
+                            Enter a valid email and password
+                        </Alert>
+                    )}
                 </Stack>
                 <Box
                     rounded={'lg'}
@@ -74,6 +95,7 @@ export default function SignInForm() {
                                 <FormErrorMessage>
                                     {errors.email &&
                                         errors.email?.message?.toString()}
+                                    {/* (error.isError && error.message) */}
                                 </FormErrorMessage>
                             </FormControl>
                             <FormControl

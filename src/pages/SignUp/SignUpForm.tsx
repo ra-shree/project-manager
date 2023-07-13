@@ -14,13 +14,15 @@ import {
     Text,
     useColorModeValue,
     Link,
+    Alert,
+    AlertIcon,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { z, ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { onRegister } from '../../utils';
+import { api } from '../../utils';
 
 interface SignUpFormData {
     first_name: string;
@@ -32,7 +34,8 @@ interface SignUpFormData {
 
 export default function SignupForm() {
     const [showPassword, setShowPassword] = useState(false);
-
+    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const schema: ZodType<SignUpFormData> = z
         .object({
             first_name: z.string().min(3).max(255),
@@ -55,9 +58,23 @@ export default function SignupForm() {
     });
 
     async function onSubmit(values: SignUpFormData) {
-        await onRegister(values);
-        // return redirect('/dashboard');
+        try {
+            await api.get('/sanctum/csrf-cookie');
+            await api.post('/register', values);
+        } catch (err) {
+            setErrorMessage(err.response.data.message);
+            setError(true);
+        }
     }
+
+    useEffect(() => {
+        if (error) {
+            setTimeout(() => {
+                setError(false);
+            }, 3000);
+        }
+    }, [error]);
+
     return (
         <Flex
             minH={'87vh'}
@@ -73,6 +90,12 @@ export default function SignupForm() {
                     <Text fontSize={'lg'} color={'gray.600'}>
                         to enjoy all of our cool features ✌️
                     </Text>
+                    {error && (
+                        <Alert status="error">
+                            <AlertIcon />
+                            {errorMessage}
+                        </Alert>
+                    )}
                 </Stack>
                 <Box
                     rounded={'lg'}
