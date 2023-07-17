@@ -1,33 +1,35 @@
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { api } from '../../utils';
-import { useState, useEffect } from 'react';
-import { useGetUserInfoQuery } from '../../utils/query';
+import { setUser } from '../../features/user';
+import { UserState } from '../../features/types';
 
 export default function Dashboard() {
-    // const [profile, setProfile] = useState();
+  const dispatch = useDispatch();
+  const [profile, setProfile] = useState<UserState>();
+  useEffect(() => {
+    async function getProfile() {
+      const profile = await api.get('/api/user');
+      const userInfo: UserState = {
+        id: profile.data.id,
+        firstName: profile.data.first_name,
+        lastName: profile.data.last_name,
+        email: profile.data.email,
+      };
+      setProfile(userInfo);
+      dispatch(setUser(userInfo));
+    }
 
-    // const { data, error, isLoading } = useGetUserInfoQuery();
+    getProfile();
+  }, []);
 
-    // console.log(data);
-    // useEffect(() => {
-    //     async function getProfiles() {
-    //         try {
-    //             const fetchData = await api.get('/api/user');
-    //             setProfile(fetchData.data);
-    //             sessionStorage.setItem('user', JSON.stringify(fetchData.data));
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     }
-    //     getProfiles();
-    // }, []);
-
-    return (
-        <div>
-            <h1>Dashboard</h1>
-            <p>
-                Welcome, User
-                {/* {profile === undefined ? 'user' : profile['first_name']} */}
-            </p>
-        </div>
-    );
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <p>
+        Welcome, User
+        {profile === undefined ? 'user' : profile['firstName']}
+      </p>
+    </div>
+  );
 }
