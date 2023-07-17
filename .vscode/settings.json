@@ -1,0 +1,7 @@
+{
+  "prettier.bracketSameLine": true,
+  "prettier.proseWrap": "always",
+  "prettier.singleQuote": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.quoteProps": "consistent"
+}
