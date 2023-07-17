@@ -6,22 +6,26 @@ import { UserState } from '../../features/types';
 
 export default function Dashboard() {
   const dispatch = useDispatch();
+
   const [profile, setProfile] = useState<UserState>();
+
   useEffect(() => {
     async function getProfile() {
       const profile = await api.get('/api/user');
+
       const userInfo: UserState = {
         id: profile.data.id,
         firstName: profile.data.first_name,
         lastName: profile.data.last_name,
         email: profile.data.email,
       };
+
       setProfile(userInfo);
       dispatch(setUser(userInfo));
     }
 
     getProfile();
-  }, []);
+  }, [profile]);
 
   return (
     <div>
