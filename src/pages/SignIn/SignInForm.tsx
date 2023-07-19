@@ -19,6 +19,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { api } from '../../utils';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { getUserProfile, setUser } from '../../features';
+import { useNavigate } from 'react-router-dom';
 
 interface SignInFormData {
   email: string;
@@ -27,12 +30,18 @@ interface SignInFormData {
 
 export default function SignInForm() {
   const [error, setError] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   async function onSubmit(values: SignInFormData) {
     try {
       await api.get('/sanctum/csrf-cookie');
-      await api.post('/login', values);
-      window.location.href = '/dashboard';
+      let userInfo = await api.post('/login', values);
+      if (userInfo.data.message == 'authenticated') {
+        const user = await getUserProfile();
+        dispatch(setUser(user));
+      }
+      navigate('/dashboard');
     } catch (err: any) {
       setError(true);
     }
