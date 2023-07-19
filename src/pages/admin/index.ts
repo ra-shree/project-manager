@@ -1,2 +1,2 @@
-export { default as CreateUserForm } from './CreateUser/CreateUserForm';
-export { default as UserList } from './UserList/UserList';
+export { default as CreateUser } from './user/Create';
+export { default as HomeUser } from './user/Home';

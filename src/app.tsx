@@ -8,7 +8,7 @@ import { SignUpForm } from './pages/SignUp';
 import { Dashboard } from './pages/Dashboard';
 import { Projects } from './pages/Projects';
 import { Tasks } from './pages/Tasks';
-import { CreateUserForm, UserList } from './pages/admin';
+import { CreateUser, HomeUser } from './pages/admin';
 import { UserState } from './features';
 import { useSelector } from 'react-redux';
 
@@ -43,8 +43,8 @@ export default function App() {
 
           <Route path="/projects" element={<Projects />} />
           <Route path="/tasks" element={<Tasks />} />
-          <Route path="/admin/user/create" element={<CreateUserForm />} />
-          <Route path="/admin/user" element={<UserList />} />
+          <Route path="/admin/users/create" element={<CreateUser />} />
+          <Route path="/admin/users" element={<HomeUser />} />
         </Routes>
       </Box>
       <Footer />

@@ -17,6 +17,7 @@ import {
   AlertIcon,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { z, ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,16 +33,17 @@ interface CreateUserFormData {
   password_confirmation: string;
 }
 
-export default function CreateUserForm() {
+export default function CreateUser() {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   async function onSubmit(values: CreateUserFormData) {
     try {
       await api.get('/sanctum/csrf-cookie');
       await api.post('/admin/create/user', values);
-      window.location.href = '/dashboard';
+      navigate('/admin/users');
     } catch (err: any) {
       setErrorMessage(err.response.data.message);
       setError(true);
@@ -178,11 +180,9 @@ export default function CreateUserForm() {
               </FormControl>
               <FormControl id="role" isRequired>
                 <FormLabel>Select a Role</FormLabel>
-                <Select placeholder="Select option">
-                  <option value="developer" selected>
-                    Developer
-                  </option>
-                  <option value="manager">Managaer</option>
+                <Select placeholder="Select option" defaultValue={'developer'}>
+                  <option value="developer">Developer</option>
+                  <option value="manager">Manager</option>
                 </Select>
               </FormControl>
               <Stack spacing={10} pt={2}>
@@ -195,7 +195,7 @@ export default function CreateUserForm() {
                     bg: 'blue.500',
                   }}
                   type="submit">
-                  Sign up
+                  Create
                 </Button>
               </Stack>
             </Stack>
