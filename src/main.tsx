@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { store } from './utils';
 import './index.css';
 import App from './app';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ ReactDOM.createRoot(rootElement).render(
           </BrowserRouter>
         </ChakraProvider>
       </Provider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>
 );
