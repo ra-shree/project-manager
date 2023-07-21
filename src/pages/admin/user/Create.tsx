@@ -23,12 +23,18 @@ import { z, ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { api } from '../../../utils';
+import { useQuery, useMutation } from '@tanstack/react-query';
+
+enum Roles {
+  developer = 'developer',
+  manager = 'manager',
+}
 
 interface CreateUserFormData {
   first_name: string;
   last_name: string;
   email: string;
-  role: string;
+  role: Roles;
   password: string;
   password_confirmation: string;
 }
@@ -38,12 +44,14 @@ export default function CreateUser() {
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  // const queryClient = useQueryClient();
 
   async function onSubmit(values: CreateUserFormData) {
     try {
       await api.get('/sanctum/csrf-cookie');
-      await api.post('/admin/create/user', values);
-      navigate('/admin/users');
+      const res = await api.post('/api/admin/users/create', values);
+      console.log(res.data);
+      // navigate('/admin/users');
     } catch (err: any) {
       setErrorMessage(err.response.data.message);
       setError(true);
@@ -55,7 +63,7 @@ export default function CreateUser() {
       first_name: z.string().min(3).max(255),
       last_name: z.string().min(3).max(255),
       email: z.string().email(),
-      role: z.enum(['manager', 'developer']),
+      role: z.enum(['developer', 'manager']),
       password: z.string().min(8).max(255),
       password_confirmation: z.string().min(8).max(255),
     })
