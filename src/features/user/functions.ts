@@ -1,8 +1,8 @@
-import api from '../../utils/axios';
+import { authApi } from '../../utils/axios';
 import { UserState } from './user';
 
 export default async function getUserProfile() {
-  const profile = await api.get('/api/user');
+  const profile = await authApi.get('/api/user');
   const user: UserState = {
     id: profile.data.id,
     firstName: profile.data.first_name,
