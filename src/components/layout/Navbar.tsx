@@ -18,8 +18,9 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { useDispatch } from 'react-redux';
-import { api } from '../../utils';
-import { UserState, resetUser } from '../../features/user/user';
+import { authApi } from '../../utils';
+import { UserState, resetUser, setUser } from '../../features/user/user';
+import { useEffect } from 'react';
 
 interface Links {
   name: string;
@@ -67,9 +68,9 @@ export default function Navbar({ userInfo }: { userInfo: UserState }) {
   }
 
   async function onLogout() {
-    dispatch(resetUser());
-    navigate('/home');
-    await api.post('/logout');
+    await authApi.post('api/logout');
+    localStorage.removeItem('token');
+    document.location.href = '/home';
   }
 
   return (
@@ -111,7 +112,7 @@ export default function Navbar({ userInfo }: { userInfo: UserState }) {
             </HStack>
           </HStack>
 
-          {userInfo?.id != 0 ? UserOptions(userInfo, onLogout) : LoginOptions()}
+          {userInfo.id != 0 ? UserOptions(userInfo, onLogout) : LoginOptions()}
         </Flex>
       </Box>
     </>

@@ -1,7 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
-axios.defaults.withCredentials = true;
-const api: AxiosInstance = axios.create({
+export const api: AxiosInstance = axios.create({
   baseURL: 'http://localhost',
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
@@ -9,4 +8,11 @@ const api: AxiosInstance = axios.create({
   },
 });
 
-export default api;
+export const authApi: AxiosInstance = axios.create({
+  baseURL: 'http://localhost',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Accept': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+  },
+});

@@ -29,31 +29,37 @@ interface SignInFormData {
 }
 
 export default function SignInForm() {
-  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   async function onSubmit(values: SignInFormData) {
     try {
-      await api.get('/sanctum/csrf-cookie');
-      let userInfo = await api.post('/login', values);
-      if (userInfo.data.message == 'authenticated') {
-        const user = await getUserProfile();
-        dispatch(setUser(user));
+      let userInfo = await api.post('/api/login', values);
+      console.log(userInfo);
+      if (userInfo.data.message == 'Authenticated') {
+        localStorage.setItem('token', userInfo.data.token);
+        document.location.href = '/dashboard';
       }
-      navigate('/dashboard');
     } catch (err: any) {
-      setError(true);
+      console.log(err);
     }
   }
 
   useEffect(() => {
-    if (error) {
+    let isMounted = true;
+
+    if (errorMessage) {
       setTimeout(() => {
-        setError(false);
+        if (isMounted) {
+          setErrorMessage('');
+        }
       }, 3000);
     }
-  }, [error]);
+    return () => {
+      isMounted = false;
+    };
+  }, [errorMessage]);
 
   const schema: ZodType<SignInFormData> = z.object({
     email: z.string().email(),
@@ -84,10 +90,9 @@ export default function SignInForm() {
             </Link>{' '}
             ✌️
           </Text>
-          {error && (
+          {errorMessage && (
             <Alert status="error">
               <AlertIcon />
-              Enter a valid email and password
             </Alert>
           )}
         </Stack>

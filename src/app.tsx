@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { Box } from '@chakra-ui/react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { Navbar, Footer } from './components';
 import { Home } from './pages/Home';
 import { SignInForm } from './pages/SignIn';
@@ -15,9 +14,10 @@ import {
   HomeUser,
 } from './pages/admin';
 import { UserState } from './features';
-import { useSelector } from 'react-redux';
+import { getUserProfile } from './features';
 
 export default function App() {
+  const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserState>({
     id: 0,
     firstName: '',
@@ -26,33 +26,31 @@ export default function App() {
     role: '',
   });
 
-  const user = useSelector((state: any) => state.user);
-
   useEffect(() => {
-    setUserInfo(user);
-  }, [user]);
-
+    (async function fetchUserData() {
+      try {
+        const user = await getUserProfile();
+        setUserInfo(user);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
   return (
     <>
       <Navbar userInfo={userInfo} />
-
-      <Box>
-        <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/signin" element={<SignInForm />} />
-          <Route path="/signup" element={<SignUpForm />} />
-          <Route
-            path="/dashboard"
-            element={<Dashboard userInfo={userInfo} />}
-          />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/tasks" element={<Tasks />} />
-          <Route path="/admin/users" element={<HomeUser />} />
-          <Route path="/admin/users/create" element={<CreateUser />} />
-          <Route path="/admin/projects" element={<HomeProject />} />
-          <Route path="/admin/projects/create" element={<CreateProject />} />
-        </Routes>
-      </Box>
+      <Routes>
+        <Route path="/home" element={<Home />} />
+        <Route path="/signin" element={<SignInForm />} />
+        <Route path="/signup" element={<SignUpForm />} />
+        <Route path="/dashboard" element={<Dashboard userInfo={userInfo} />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/tasks" element={<Tasks />} />
+        <Route path="/admin/users" element={<HomeUser />} />
+        <Route path="/admin/users/create" element={<CreateUser />} />
+        <Route path="/admin/projects" element={<HomeProject />} />
+        <Route path="/admin/projects/create" element={<CreateProject />} />
+      </Routes>
       <Footer />
     </>
   );
