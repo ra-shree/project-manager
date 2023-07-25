@@ -18,7 +18,7 @@ import {
 import { DeleteIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
-import { api } from '../../../utils';
+import { authApi } from '../../../utils';
 import { useQueryClient } from '@tanstack/react-query';
 
 export default function DataTable({
@@ -34,7 +34,7 @@ export default function DataTable({
 
   async function deleteUser() {
     if (userId) {
-      await api.delete(`api/admin/users/delete/${userId}`);
+      await authApi.delete(`api/admin/users/delete/${userId}`);
       queryClient.invalidateQueries('users');
     }
   }

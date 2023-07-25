@@ -22,21 +22,16 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { z, ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { api } from '../../../utils';
+import { authApi } from '../../../utils';
 import { useQuery, useMutation } from '@tanstack/react-query';
-
-enum Roles {
-  developer = 'developer',
-  manager = 'manager',
-}
 
 interface CreateUserFormData {
   first_name: string;
   last_name: string;
   email: string;
-  role: Roles;
   password: string;
   password_confirmation: string;
+  role: string;
 }
 
 export default function CreateUser() {
@@ -48,10 +43,10 @@ export default function CreateUser() {
 
   async function onSubmit(values: CreateUserFormData) {
     try {
-      await api.get('/sanctum/csrf-cookie');
-      const res = await api.post('/api/admin/users/create', values);
-      console.log(res.data);
-      // navigate('/admin/users');
+      const res = await authApi.post('api/admin/users/create', values);
+      if (res.data == 'User Created') {
+        navigate('/admin/users');
+      }
     } catch (err: any) {
       setErrorMessage(err.response.data.message);
       setError(true);
@@ -63,9 +58,9 @@ export default function CreateUser() {
       first_name: z.string().min(3).max(255),
       last_name: z.string().min(3).max(255),
       email: z.string().email(),
-      role: z.enum(['developer', 'manager']),
       password: z.string().min(8).max(255),
       password_confirmation: z.string().min(8).max(255),
+      role: z.string(),
     })
     .refine((data) => data.password === data.password_confirmation, {
       path: ['confirmPassword'],
@@ -186,9 +181,12 @@ export default function CreateUser() {
                                     </FormErrorMessage> */}
                 </InputGroup>
               </FormControl>
-              <FormControl id="role" isRequired>
+              <FormControl isRequired>
                 <FormLabel>Select a Role</FormLabel>
-                <Select placeholder="Select option" defaultValue={'developer'}>
+                <Select
+                  id="role"
+                  placeholder="Select option"
+                  {...register('role')}>
                   <option value="developer">Developer</option>
                   <option value="manager">Manager</option>
                 </Select>

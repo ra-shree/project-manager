@@ -2,15 +2,16 @@ import { Box, Button, Flex, Heading, Spacer, Spinner } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import DataTable from './DataTable';
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../../../utils';
+import { authApi } from '../../../utils';
 
 export default function Home() {
   const navigate = useNavigate();
 
   const { data, isSuccess } = useQuery(['projects'], async () => {
-    const response = await api.get('/api/admin/projects');
+    const response = await authApi.get('/api/admin/projects');
     return response.data;
   });
+
   return (
     <>
       <Flex style={{ padding: '1em 0em 1em 2em' }}>
@@ -35,6 +36,7 @@ export default function Home() {
             'Project Manager',
             'Created At',
             'Status',
+            'Actions',
           ]}
           TableData={data}
         />

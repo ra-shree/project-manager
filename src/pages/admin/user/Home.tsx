@@ -2,13 +2,13 @@ import { Box, Button, Flex, Heading, Spacer, Spinner } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import DataTable from './DataTable';
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../../../utils';
+import { authApi } from '../../../utils';
 
 export default function Home() {
   const navigate = useNavigate();
 
   const { data, isSuccess } = useQuery(['users'], async () => {
-    const response = await api.get('/api/admin/users');
+    const response = await authApi.get('/api/admin/users');
     return response.data;
   });
 
