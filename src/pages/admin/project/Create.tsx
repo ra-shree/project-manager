@@ -19,13 +19,13 @@ import { useNavigate } from 'react-router-dom';
 import { z, ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Mutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../../utils';
+import { authApi } from '../../../utils';
+import { useQuery } from '@tanstack/react-query';
 
 interface CreateProjectFormData {
-  name: string;
+  title: string;
   description: string | null;
-  manager_id: number | null;
+  manager_id: string;
 }
 
 export default function CreateProject() {
@@ -33,23 +33,30 @@ export default function CreateProject() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
+  const { data, isSuccess } = useQuery(['managers'], async () => {
+    const response = await authApi.get('/api/admin/users/manager');
+    return response.data;
+  });
+
   // const queryClient = useQueryClient();
   // queryClient();
-  // async function onSubmit(values: CreateProjectFormData) {
-  //   try {
-  //     // await api.get('/sanctum/csrf-cookie');
-  //     // await api.post('/admin/create/user', values);
-  //     navigate('/admin/projects');
-  //   } catch (err: any) {
-  //     // setErrorMessage(err.response.data.message);
-  //     // setError(true);
-  //   }
-  // }
+  async function onSubmit(values: CreateProjectFormData) {
+    try {
+      // await api.get('/sanctum/csrf-cookie');
+      const res = await authApi.post('/api/admin/projects/create', values);
+      if (res.data == 'Project Created') {
+        navigate('/admin/projects');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.response.data.message);
+      setError(true);
+    }
+  }
 
   const schema: ZodType<CreateProjectFormData> = z.object({
-    project_name: z.string().min(3).max(255),
+    title: z.string().min(3).max(255),
     description: z.string().max(1000).nullable(),
-    project_manager_id: z.number().nullable(),
+    manager_id: z.string(),
   });
 
   const {
@@ -92,14 +99,14 @@ export default function CreateProject() {
           boxShadow={'lg'}
           p={8}
           w="100%">
-          <form method="post">
+          <form method="post" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={4}>
               <Box>
-                <FormControl id="name" isInvalid={errors.name} isRequired>
+                <FormControl id="title" isInvalid={errors.title} isRequired>
                   <FormLabel>Project Name</FormLabel>
-                  <Input type="text" {...register('name')} />
+                  <Input type="text" {...register('title')} />
                   <FormErrorMessage>
-                    {errors.name && errors.name?.message?.toString()}
+                    {errors.title && errors.title?.message?.toString()}
                   </FormErrorMessage>
                 </FormControl>
               </Box>
@@ -117,13 +124,21 @@ export default function CreateProject() {
                   </FormErrorMessage>
                 </FormControl>
               </Box>
-              <FormControl id="role">
+              <FormControl>
                 <FormLabel>Select a Project Manager</FormLabel>
-                <Select placeholder="Select option">
-                  {/* Todo: Add options for all the available project managers */}
-                  <option value="1">Manager A</option>
-                  <option value="2">Manager B</option>
-                  <option value="3">Manager C</option>
+                <Select
+                  id="manager_id"
+                  placeholder="Select option"
+                  isInvalid={errors.manager_id}
+                  {...register('manager_id')}>
+                  {isSuccess &&
+                    data.map((manager: any) => (
+                      <option
+                        key={parseInt(manager.id)}
+                        value={parseInt(manager.id)}>
+                        {manager.first_name + ' ' + manager.last_name}
+                      </option>
+                    ))}
                 </Select>
               </FormControl>
               <Stack spacing={10} pt={2}>
