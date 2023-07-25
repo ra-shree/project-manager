@@ -40,8 +40,8 @@ const AdminLinks: Links[] = [
 ];
 
 const ManagerLinks: Links[] = [
-  { name: 'Users', path: '/users' },
-  { name: 'Projects', path: '/projects' },
+  { name: 'Users', path: '/user' },
+  { name: 'Projects', path: '/user/projects' },
 ];
 
 const DeveloperLinks: Links[] = [
@@ -50,8 +50,6 @@ const DeveloperLinks: Links[] = [
 ];
 
 export default function Navbar({ userInfo }: { userInfo: UserState }) {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   let NavLinks: Links[] = [];
