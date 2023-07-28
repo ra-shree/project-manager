@@ -59,7 +59,7 @@ export default function DataTable({
                 <Th>{data.role}</Th>
                 <Th>
                   <DeleteIcon
-                    className="ml-6"
+                    className="ml-6 cursor-pointer"
                     onClick={() => {
                       setUserId(data.id);
                       onOpen();

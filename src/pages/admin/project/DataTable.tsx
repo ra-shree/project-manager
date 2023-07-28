@@ -72,7 +72,7 @@ export default function DataTable({
                 <Th>{data.status}</Th>
                 <Th>
                   <DeleteIcon
-                    className="ml-6"
+                    className="ml-6 cursor-pointer"
                     onClick={() => {
                       setProjectId(data.id);
                       onOpen();
