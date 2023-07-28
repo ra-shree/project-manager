@@ -39,14 +39,9 @@ const AdminLinks: Links[] = [
   { name: 'Projects', path: '/admin/projects' },
 ];
 
-const ManagerLinks: Links[] = [
-  { name: 'Users', path: '/user' },
+const UserLinks: Links[] = [
   { name: 'Projects', path: '/user/projects' },
-];
-
-const DeveloperLinks: Links[] = [
-  { name: 'Tasks', path: '/tasks' },
-  { name: 'Projects', path: '/projects' },
+  { name: 'Tasks', path: '/user/tasks' },
 ];
 
 export default function Navbar({ userInfo }: { userInfo: UserState }) {
@@ -57,10 +52,8 @@ export default function Navbar({ userInfo }: { userInfo: UserState }) {
     NavLinks = HomeLinks;
   } else if (userInfo.role === 'admin') {
     NavLinks = AdminLinks;
-  } else if (userInfo.role === 'manager') {
-    NavLinks = ManagerLinks;
-  } else if (userInfo.role === 'developer') {
-    NavLinks = DeveloperLinks;
+  } else if (userInfo.role === 'manager' || userInfo.role === 'developer') {
+    NavLinks = UserLinks;
   } else {
     NavLinks = HomeLinks;
   }
