@@ -12,7 +12,7 @@ export default function Home(): JSX.Element {
 
   return (
     <>
-      <Flex style={{ padding: '1em 0em 1em 2em' }}>
+      <Flex style={{ padding: '1em 1em 1em 2em' }}>
         <Box>
           <Heading size="lg" h={8}>
             My Projects
