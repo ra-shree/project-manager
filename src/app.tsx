@@ -42,7 +42,10 @@ export default function App() {
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/dashboard" element={<Dashboard userInfo={userInfo} />} />
         <Route path="/user/projects" element={<Projects />} />
-        <Route path="/user/projects/:project_id" element={<ProjectPage />} />
+        <Route
+          path="/user/projects/:current_project_id"
+          element={<ProjectPage />}
+        />
         <Route path="/user/tasks" element={<Tasks />} />
         <Route path="/admin/users" element={<HomeUser />} />
         <Route path="/admin/users/create" element={<CreateUser />} />

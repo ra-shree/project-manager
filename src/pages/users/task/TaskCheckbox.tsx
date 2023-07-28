@@ -1,23 +1,40 @@
 import { useState } from 'react';
 import { Checkbox } from '@chakra-ui/react';
-import { TaskData } from './data';
-import { api } from '../../../utils';
+import { authApi } from '../../../utils';
+
+interface TaskCheckboxProps {
+  id: number;
+  completed: boolean;
+}
 
 export default function TaskCheckbox({
-  task,
+  taskData,
 }: {
-  task: TaskData;
+  taskData: TaskCheckboxProps;
 }): JSX.Element {
-  const [checked, setChecked] = useState(task.completed);
+  const [checked, setChecked] = useState<boolean>(taskData.completed);
 
   async function onChecked() {
-    const response = await api.patch(`http://localhost:3000/tasks/${task.id}`, {
-      body: JSON.stringify({ completed: !checked }),
-    });
-    const completed = await response.data.completed;
-    setChecked(completed);
+    try {
+      const response = await authApi.patch(
+        `api/user/tasks/status/${taskData.id}`,
+        {
+          body: JSON.stringify({ completed: !checked }),
+        }
+      );
+      setChecked(response.data.completed);
+    } catch (err) {
+      console.log(err);
+    }
     // console.log(completed);
   }
 
-  return <Checkbox isChecked={checked} onChange={onChecked} paddingLeft={5} />;
+  return (
+    <Checkbox
+      className="border-1 border-blue-300"
+      isChecked={checked}
+      onChange={onChecked}
+      paddingLeft={5}
+    />
+  );
 }
