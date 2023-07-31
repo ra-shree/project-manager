@@ -64,7 +64,7 @@ export default function DataTable({
                     {data.title}
                   </Link>
                 </Th>
-                <Th>{data.user.first_name + ' ' + data.user.last_name}</Th>
+                <Th>{data?.user?.first_name + ' ' + data?.user?.last_name}</Th>
                 <Th hidden>{data.description}</Th>
                 <Th>
                   {formatRelative(Date.parse(data.created_at), Date.now())}

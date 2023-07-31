@@ -33,7 +33,6 @@ export default function CreateTask({ onClose }: { onClose: () => void }) {
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors },
   } = useForm<CreateTaskFormData>({
     resolver: zodResolver(schema),
@@ -62,7 +61,6 @@ export default function CreateTask({ onClose }: { onClose: () => void }) {
   //move the add task model to the parent component
   async function addTaskOnSubmit(values: CreateTaskFormData) {
     try {
-      getValues();
       const res = await authApi.post(`/api/user/tasks`, values);
       if (res.data == 'Task Created') {
         queryClient.invalidateQueries('tasks');
@@ -107,15 +105,6 @@ export default function CreateTask({ onClose }: { onClose: () => void }) {
             <Spinner size="xl" />
           )}
         </Select>
-        {/* <Select
-          id="project_id"
-          placeholder="Select a project"
-          {...register('project_id')}
-          isRequired>
-          <option value="Project A">Project A</option>
-          <option value="Project B">Project B</option>
-          <option value="Project C">Project C</option>
-        </Select> */}
         <FormErrorMessage>
           {errors.project_id && errors.project_id?.message?.toString()}
         </FormErrorMessage>
