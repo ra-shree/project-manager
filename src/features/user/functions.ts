@@ -8,7 +8,7 @@ export default async function getUserProfile() {
     lastName: '',
     email: '',
     role: '',
-  } as UserState;
+  };
 
   const token = localStorage.getItem('token');
   if (!token) {
@@ -17,11 +17,11 @@ export default async function getUserProfile() {
 
   const profile = await authApi.get('/api/user');
   defaultUser = {
-    id: profile.data.id,
-    firstName: profile.data.first_name,
-    lastName: profile.data.last_name,
-    email: profile.data.email,
-    role: profile.data.role,
+    id: profile.data?.id,
+    firstName: profile?.data?.first_name,
+    lastName: profile?.data?.last_name,
+    email: profile?.data?.email,
+    role: profile?.data?.role,
   };
   return defaultUser;
 }
