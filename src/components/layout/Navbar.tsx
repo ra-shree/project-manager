@@ -15,12 +15,10 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import { useDispatch } from 'react-redux';
 import { authApi } from '../../utils';
-import { UserState, resetUser, setUser } from '../../features/user/user';
-import { useEffect } from 'react';
+import { UserState } from '../../features/user/user';
 
 interface Links {
   name: string;
@@ -112,6 +110,7 @@ export default function Navbar({ userInfo }: { userInfo: UserState }) {
 
 const NavLink = (link: Links) => (
   <Link
+    key={link.name}
     className="px-2 py-1 rounded-md hover:bg-gray-200 transition duration-500 ease-in-out"
     to={link.path}>
     {link.name}
