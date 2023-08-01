@@ -34,7 +34,6 @@ export default function TaskCheckbox({
       className="border-1 border-blue-300"
       isChecked={checked}
       onChange={onChecked}
-      paddingLeft={5}
     />
   );
 }

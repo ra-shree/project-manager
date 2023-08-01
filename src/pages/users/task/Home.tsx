@@ -12,12 +12,15 @@ import {
   ModalCloseButton,
   Spinner,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import { TasksTable, CreateTask } from '..';
+import { TasksTable, TaskForm } from '..';
 import { authApi } from '../../../utils';
+import { TaskFormData } from './types.d';
 
 export default function Home() {
+  const [updateTask, setUpdateTask] = useState<TaskFormData>();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { data, isSuccess } = useQuery({
@@ -38,7 +41,12 @@ export default function Home() {
         </Box>
         <Spacer />
         <Box>
-          <Button colorScheme="whatsapp" onClick={onOpen}>
+          <Button
+            colorScheme="whatsapp"
+            onClick={() => {
+              setUpdateTask(undefined);
+              onOpen();
+            }}>
             Create New Task
           </Button>
         </Box>
@@ -47,6 +55,8 @@ export default function Home() {
         <TasksTable
           tableColumns={['Title', 'Assigned To', 'Description', 'Actions']}
           tableData={data}
+          onOpen={onOpen}
+          setUpdateTask={setUpdateTask}
         />
       ) : (
         <Spinner size="xl" />
@@ -55,10 +65,16 @@ export default function Home() {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create a Task</ModalHeader>
+          <ModalHeader>
+            {!updateTask ? 'Create a Task' : 'Update Task'}
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <CreateTask onClose={onClose} />
+            <TaskForm
+              updateTask={updateTask}
+              setUpdateTask={setUpdateTask}
+              onClose={onClose}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>

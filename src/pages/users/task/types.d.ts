@@ -1,4 +1,4 @@
-export interface CreateTaskFormData {
+export interface TaskFormData {
   id?: number;
   title: string;
   description: string | null;
