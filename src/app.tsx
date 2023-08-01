@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 import { Navbar, Footer } from './components';
 import { Home } from './pages/Home';
 import { SignInForm } from './pages/SignIn';
-import { SignUpForm } from './pages/SignUp';
 import { Dashboard } from './pages/Dashboard';
 import { Projects, ProjectPage, Tasks } from './pages/users';
 import {
@@ -39,7 +38,6 @@ export default function App() {
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/signin" element={<SignInForm />} />
-        <Route path="/signup" element={<SignUpForm />} />
         <Route path="/dashboard" element={<Dashboard userInfo={userInfo} />} />
         <Route path="/user/projects" element={<Projects />} />
         <Route
