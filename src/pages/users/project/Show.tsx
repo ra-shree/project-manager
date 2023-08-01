@@ -1,6 +1,5 @@
 import {
   Button,
-  FormControl,
   Input,
   InputGroup,
   InputRightElement,
@@ -76,9 +75,12 @@ export default function ProjectPage() {
                     <SearchIcon />
                   </InputRightElement>
                 </InputGroup>
-                <Button colorScheme="twitter" onClick={onOpen} padding="20px">
-                  Add member
-                </Button>
+
+                {userInfo.role === 'manager' && (
+                  <Button colorScheme="twitter" onClick={onOpen} padding="20px">
+                    Add member
+                  </Button>
+                )}
               </Flex>
             </Flex>
             <UserTable
