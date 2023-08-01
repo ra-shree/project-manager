@@ -21,12 +21,7 @@ export default function Home(): JSX.Element {
       </Flex>
       {isSuccess ? (
         <DataTable
-          TableColumns={[
-            'Project Name',
-            'Created At',
-            'Last Updated',
-            'Status',
-          ]}
+          TableColumns={['Project Name', 'Created', 'Last Updated', 'Status']}
           TableData={data}
         />
       ) : (

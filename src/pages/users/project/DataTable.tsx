@@ -8,7 +8,7 @@ import {
   TableContainer,
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
-import { formatRelative } from 'date-fns';
+import { formatDistance, formatRelative, subDays } from 'date-fns';
 
 export default function DataTable({
   TableColumns,
@@ -40,7 +40,15 @@ export default function DataTable({
               </Th>
               {/* <Th>{data.}</Th> */}
               <Th hidden>{data.description}</Th>
-              <Th>{formatRelative(Date.parse(data.created_at), Date.now())}</Th>
+              <Th>
+                {formatDistance(
+                  subDays(Date.parse(data.created_at), 3),
+                  Date.now(),
+                  {
+                    addSuffix: true,
+                  }
+                )}
+              </Th>
               <Th>{formatRelative(Date.parse(data.updated_at), Date.now())}</Th>
               <Th>{data.status}</Th>
             </Tr>

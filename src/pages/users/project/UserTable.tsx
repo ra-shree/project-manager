@@ -43,11 +43,14 @@ export default function UserTable({
           `api/user/projects/${projectId}/remove/${userId}`
         );
         if (res.data == 'Member Removed') {
-          queryClient.invalidateQueries('project.developers');
+          queryClient.invalidateQueries(['project']);
+          queryClient.invalidateQueries(['project.developers']);
         }
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      onClose();
     }
   }
 
@@ -74,7 +77,6 @@ export default function UserTable({
                   {data.email}
                 </Link>
               </Th>
-              {/* <Th>{data.}</Th> */}
               <Th>{data.role}</Th>
               <Th>
                 <DeleteIcon
@@ -99,12 +101,7 @@ export default function UserTable({
                       <Button variant="ghost" mr={3} onClick={onClose}>
                         Close
                       </Button>
-                      <Button
-                        colorScheme="red"
-                        onClick={() => {
-                          deleteUser();
-                          onClose();
-                        }}>
+                      <Button colorScheme="red" onClick={deleteUser}>
                         Yes
                       </Button>
                     </ModalFooter>

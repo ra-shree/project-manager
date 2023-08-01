@@ -42,7 +42,7 @@ export default function App() {
         <Route path="/user/projects" element={<Projects />} />
         <Route
           path="/user/projects/:current_project_id"
-          element={<ProjectPage />}
+          element={<ProjectPage userInfo={userInfo} />}
         />
         <Route path="/user/tasks" element={<Tasks />} />
         <Route path="/admin/users" element={<HomeUser />} />

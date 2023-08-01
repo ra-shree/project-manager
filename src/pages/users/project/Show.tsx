@@ -9,23 +9,32 @@ import {
   Box,
   Flex,
   Spacer,
+  Select,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { authApi } from '../../../utils';
 import { useDisclosure } from '@chakra-ui/react';
 import formatRelative from 'date-fns/formatRelative';
 import UserTable from './UserTable';
 import { AddUser } from '..';
+import { UserState } from '../../../features';
+import { UpdateStatusFormData } from './types';
+import { useForm } from 'react-hook-form';
 
-export default function ProjectPage() {
+const projectStatusItems = ['Draft', 'On Hold', 'Completed', 'In Progress'];
+
+export default function ProjectPage({ userInfo }: { userInfo: UserState }) {
+  let queryClient = useQueryClient();
+
   let { current_project_id } = useParams();
-  if (current_project_id === undefined) {
-    current_project_id = '0';
-  }
+  current_project_id = current_project_id ? current_project_id : '0';
+
   let projectId = parseInt(current_project_id);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { register, handleSubmit, setValue } = useForm<UpdateStatusFormData>();
 
   const projectQuery = useQuery({
     queryKey: [`project`],
@@ -36,6 +45,21 @@ export default function ProjectPage() {
       return response.data;
     },
   });
+
+  async function onSubmit(values: UpdateStatusFormData) {
+    try {
+      const res = await authApi.put(
+        `/api/user/projects/status/${current_project_id}`,
+        values
+      );
+      if (res.data?.status) {
+        setValue('status', res.data?.status);
+        queryClient.invalidateQueries(['project']);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -50,7 +74,22 @@ export default function ProjectPage() {
             <Spacer />
             <Flex paddingBottom={3}>
               <Box>
-                <Text>{projectQuery.data.status}</Text>
+                <Select
+                  isDisabled={userInfo.role === 'developer' ? true : false}
+                  {...register('status')}
+                  onChange={handleSubmit(onSubmit)}>
+                  {projectStatusItems.map((item) =>
+                    item === projectQuery.data.status ? (
+                      <option key={item} value={item} selected>
+                        {item}
+                      </option>
+                    ) : (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    )
+                  )}
+                </Select>
               </Box>
               <Spacer />
               <Box>

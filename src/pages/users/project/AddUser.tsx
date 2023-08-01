@@ -17,11 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { authApi } from '../../../utils';
-
-interface AddMemberFormData {
-  user_id: number;
-  project_id: number;
-}
+import { AddMemberFormData } from './types';
 
 export default function AddUser({
   isOpen,
@@ -42,6 +38,7 @@ export default function AddUser({
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<AddMemberFormData>({
     resolver: zodResolver(schema),
@@ -62,12 +59,14 @@ export default function AddUser({
         values
       );
       if (res.data == 'Developer added to Project') {
-        queryClient.invalidateQueries('project.developers');
-        queryClient.invalidateQueries('project');
-        onClose();
+        queryClient.invalidateQueries(['project.developers']);
+        queryClient.invalidateQueries(['project']);
       }
     } catch (err: any) {
       console.log(err);
+    } finally {
+      setValue('user_id', undefined);
+      onClose();
     }
   }
 
@@ -87,9 +86,9 @@ export default function AddUser({
                 id="user_id"
                 placeholder="Select a Developer"
                 {...register('user_id', { valueAsNumber: true })}
-                isInvalid={errors.user_id}>
+                isInvalid={errors.user_id ? true : false}>
                 {developerQuery.isSuccess ? (
-                  developerQuery.data.map((data) => (
+                  developerQuery.data.map((data: any) => (
                     <option value={data.id}>
                       {data.email} ({data.first_name + ' ' + data.last_name})
                     </option>
@@ -103,7 +102,7 @@ export default function AddUser({
                 type="number"
                 value={projectId}
                 {...register('project_id', { valueAsNumber: true })}
-                isInvalid={errors.project_id}
+                isInvalid={errors.project_id ? true : false}
                 hidden
               />
             </FormControl>
