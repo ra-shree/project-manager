@@ -13,17 +13,21 @@ import {
 import { useForm } from 'react-hook-form';
 import { authApi } from '../../../utils';
 import { useQueries, useQueryClient } from '@tanstack/react-query';
+import { TaskFormData } from './types.d';
+import { AxiosResponse } from 'axios';
+import { useEffect } from 'react';
 
-interface CreateTaskFormData {
-  title: string;
-  description: string | null;
-  project_id: number;
-  user_id: number;
-}
-
-export default function CreateTask({ onClose }: { onClose: () => void }) {
+export default function TaskForm({
+  updateTask,
+  setUpdateTask,
+  onClose,
+}: {
+  updateTask?: TaskFormData;
+  setUpdateTask: React.Dispatch<React.SetStateAction<TaskFormData | undefined>>;
+  onClose: () => void;
+}) {
   const queryClient = useQueryClient();
-  const schema: ZodType<CreateTaskFormData> = z.object({
+  const schema: ZodType<TaskFormData> = z.object({
     title: z.string().min(3).max(255),
     description: z.string().max(500).nullable(),
     project_id: z.number().int().positive(),
@@ -33,8 +37,9 @@ export default function CreateTask({ onClose }: { onClose: () => void }) {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm<CreateTaskFormData>({
+  } = useForm<TaskFormData>({
     resolver: zodResolver(schema),
   });
 
@@ -58,30 +63,47 @@ export default function CreateTask({ onClose }: { onClose: () => void }) {
     ],
   });
 
-  //move the add task model to the parent component
-  async function addTaskOnSubmit(values: CreateTaskFormData) {
+  async function onSubmit(values: TaskFormData) {
     try {
-      const res = await authApi.post(`/api/user/tasks`, values);
-      if (res.data == 'Task Created') {
-        queryClient.invalidateQueries('tasks');
-        queryClient.invalidateQueries('project');
-        onClose();
+      let res: AxiosResponse<any, any>;
+      if (!updateTask) {
+        res = await authApi.post(`/api/user/tasks`, values);
+      } else {
+        res = await authApi.put(
+          `/api/user/tasks/update/${updateTask.id}`,
+          values
+        );
+      }
+      if (res.data == 'Task Created' || res.data == 'Task Updated') {
+        queryClient.invalidateQueries(['tasks']);
+        queryClient.invalidateQueries(['project']);
       }
     } catch (err: any) {
       console.log(err);
+    } finally {
+      onClose();
+      setUpdateTask(undefined);
     }
   }
 
+  useEffect(() => {
+    if (updateTask) {
+      setValue('title', updateTask.title);
+      setValue('description', updateTask.description);
+      setValue('project_id', updateTask.project_id);
+      setValue('user_id', updateTask.user_id);
+    }
+  }, []);
   return (
     <form
       method="post"
       id="add_task"
       style={{ padding: '0em 1em 1em 1em' }}
-      onSubmit={handleSubmit(addTaskOnSubmit)}>
+      onSubmit={handleSubmit(onSubmit)}>
       <FormControl
         id="title"
         paddingBottom={4}
-        isInvalid={errors.title}
+        isInvalid={errors.title ? true : false}
         isRequired>
         <FormLabel>Choose a title</FormLabel>
         <Input type="text" {...register('title')} />
@@ -95,11 +117,13 @@ export default function CreateTask({ onClose }: { onClose: () => void }) {
           id="project_id"
           placeholder="Select a Project"
           {...register('project_id', { valueAsNumber: true })}
-          isInvalid={errors.project_id}
+          isInvalid={errors.project_id ? true : false}
           isRequired>
           {projectsQuery.isSuccess ? (
-            projectsQuery.data.map((data) => (
-              <option value={data.id}>{data.title}</option>
+            projectsQuery.data.map((data: any) => (
+              <option key={data.id} value={data.id}>
+                {data.title}
+              </option>
             ))
           ) : (
             <Spinner size="xl" />
@@ -114,7 +138,7 @@ export default function CreateTask({ onClose }: { onClose: () => void }) {
           id="description"
           placeholder="Add a description"
           style={{ height: '10em' }}
-          isInvalid={errors.description}
+          isInvalid={errors.description ? true : false}
           {...register('description')}
         />
         <FormErrorMessage>
@@ -127,10 +151,10 @@ export default function CreateTask({ onClose }: { onClose: () => void }) {
           id="user_id"
           placeholder="Select a Developer"
           {...register('user_id', { valueAsNumber: true })}
-          isInvalid={errors.user_id}>
+          isInvalid={errors.user_id ? true : false}>
           {developerQuery.isSuccess ? (
-            developerQuery.data.map((data) => (
-              <option value={data.id}>
+            developerQuery.data.map((data: any) => (
+              <option key={data.id} value={data.id}>
                 {data.first_name + ' ' + data.last_name}
               </option>
             ))
@@ -143,7 +167,7 @@ export default function CreateTask({ onClose }: { onClose: () => void }) {
         </FormErrorMessage>
       </FormControl>
       <Button loadingText="Creating" colorScheme="twitter" type="submit">
-        Create Task
+        {updateTask ? 'Update Task' : 'Create Task'}
       </Button>
     </form>
   );

@@ -8,17 +8,22 @@ import {
   TableContainer,
 } from '@chakra-ui/react';
 import { TaskCheckbox } from '..';
-import { DeleteIcon } from '@chakra-ui/icons';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
 import { authApi } from '../../../utils';
 import { useQueryClient } from '@tanstack/react-query';
+import { TaskFormData } from './types.d';
 
 export default function TasksTable({
   tableColumns,
   tableData,
+  onOpen,
+  setUpdateTask,
 }: {
   tableColumns: string[];
   tableData: any[];
+  onOpen: () => void;
+  setUpdateTask: React.Dispatch<React.SetStateAction<TaskFormData | undefined>>;
 }): JSX.Element {
   const [taskId, setTaskId] = useState<number | null>(null);
   const queryClient = useQueryClient();
@@ -30,7 +35,7 @@ export default function TasksTable({
           `api/user/tasks/delete/${taskId}`
         );
         if (response.data == 'Task Deleted') {
-          queryClient.invalidateQueries('tasks');
+          queryClient.invalidateQueries(['tasks']);
         }
       }
     } catch (err) {
@@ -44,27 +49,39 @@ export default function TasksTable({
         <Thead>
           <Tr>
             {tableColumns.map((item) => (
-              <Th>{item}</Th>
+              <Th key={item}>{item}</Th>
             ))}
           </Tr>
-          {/* <Tr>
-            <Th>Title</Th>
-            <Th>Description</Th>
-            <Th>Assigned To</Th>
-            <Th>Status</Th>
-          </Tr> */}
         </Thead>
         <Tbody>
           {tableData.map((data) => {
             return (
-              <Tr>
+              <Tr key={data.id}>
                 <Th>{data.title}</Th>
                 <Th>
                   {data.assigned.first_name + ' ' + data.assigned.last_name}
                 </Th>
                 <Th className="max-width-xs">{data.description}</Th>
                 <Th>
-                  <Flex className="ml-2">
+                  <Flex className="ml-1 gap-2">
+                    <TaskCheckbox
+                      key={data.id}
+                      taskData={{ id: data.id, completed: data.completed }}
+                    />
+                    <EditIcon
+                      className="cursor-pointer"
+                      focusable={true}
+                      onClick={() => {
+                        setUpdateTask({
+                          id: data.id,
+                          title: data.title,
+                          description: data.description,
+                          user_id: data.user_id,
+                          project_id: data.project_id,
+                        });
+                        onOpen();
+                      }}
+                    />
                     <DeleteIcon
                       className="cursor-pointer"
                       focusable={true}
@@ -72,10 +89,6 @@ export default function TasksTable({
                         setTaskId(data.id);
                         deleteTask();
                       }}
-                    />
-                    <TaskCheckbox
-                      key={data.id}
-                      taskData={{ id: data.id, completed: data.completed }}
                     />
                   </Flex>
                 </Th>
