@@ -39,7 +39,6 @@ export default function CreateUser() {
   const [errorMessage, setErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  // const queryClient = useQueryClient();
 
   async function onSubmit(values: CreateUserFormData) {
     try {
@@ -159,10 +158,6 @@ export default function CreateUser() {
                       {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                     </Button>
                   </InputRightElement>
-                  {/* <FormErrorMessage>
-                                        {errors.password &&
-                                            errors.password?.message?.toString()}
-                                    </FormErrorMessage> */}
                 </InputGroup>
               </FormControl>
               <FormControl
@@ -175,10 +170,6 @@ export default function CreateUser() {
                     type={showPassword ? 'text' : 'password'}
                     {...register('password_confirmation')}
                   />
-                  {/* <FormErrorMessage>
-                                        {errors.password_confirmation &&
-                                            errors.password_confirmation?.message?.toString()}
-                                    </FormErrorMessage> */}
                 </InputGroup>
               </FormControl>
               <FormControl isRequired>

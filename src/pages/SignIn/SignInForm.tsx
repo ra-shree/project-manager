@@ -19,9 +19,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { api } from '../../utils';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { getUserProfile, setUser } from '../../features';
-import { useNavigate } from 'react-router-dom';
 
 interface SignInFormData {
   email: string;
@@ -30,8 +27,6 @@ interface SignInFormData {
 
 export default function SignInForm() {
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   async function onSubmit(values: SignInFormData) {
     try {
