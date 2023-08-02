@@ -1,11 +1,28 @@
-import { Box, Button, Flex, Heading, Spacer, Spinner } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import DataTable from './DataTable';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  Spacer,
+  Spinner,
+} from '@chakra-ui/react';
+import { ProjectsTable, ProjectForm } from '..';
+import { useDisclosure } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { authApi } from '../../../utils';
+import { useState } from 'react';
+import { ProjectFormData } from './types';
 
 export default function Home() {
-  const navigate = useNavigate();
+  const [projectId, setProjectId] = useState<number | null>(null);
+  const [updateProject, setUpdateProject] = useState<ProjectFormData>();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { data, isSuccess } = useQuery(['projects'], async () => {
     const response = await authApi.get('/api/admin/projects');
@@ -24,13 +41,17 @@ export default function Home() {
         <Box className="pr-4">
           <Button
             colorScheme="twitter"
-            onClick={() => navigate('/admin/projects/create')}>
+            onClick={() => {
+              setProjectId(null);
+              setUpdateProject(undefined);
+              onOpen();
+            }}>
             Create New Project
           </Button>
         </Box>
       </Flex>
       {isSuccess ? (
-        <DataTable
+        <ProjectsTable
           TableColumns={[
             'Project Name',
             'Project Manager',
@@ -39,10 +60,32 @@ export default function Home() {
             'Actions',
           ]}
           TableData={data}
+          onOpen={onOpen}
+          projectId={projectId}
+          setProjectId={setProjectId}
+          setUpdateProject={setUpdateProject}
         />
       ) : (
         <Spinner size="xl" />
       )}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            {!updateProject ? 'Create a Project' : 'Update Project'}
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <ProjectForm
+              projectId={projectId}
+              updateProject={updateProject}
+              setUpdateProject={setUpdateProject}
+              onClose={onClose}
+            />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      ;
     </>
   );
 }
