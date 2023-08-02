@@ -38,7 +38,7 @@ export default function DataTable({
   async function deleteProject() {
     if (projectId) {
       await authApi.delete(`api/admin/projects/delete/${projectId}`);
-      queryClient.invalidateQueries('projects');
+      queryClient.invalidateQueries(['projects']);
     }
   }
 

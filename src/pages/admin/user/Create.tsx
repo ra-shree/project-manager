@@ -23,7 +23,6 @@ import { z, ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { authApi } from '../../../utils';
-import { useQuery, useMutation } from '@tanstack/react-query';
 
 interface CreateUserFormData {
   first_name: string;
@@ -111,7 +110,7 @@ export default function CreateUser() {
                 <Box>
                   <FormControl
                     id="first_name"
-                    isInvalid={errors.first_name}
+                    isInvalid={errors.first_name ? true : false}
                     isRequired>
                     <FormLabel>First Name</FormLabel>
                     <Input type="text" {...register('first_name')} />
@@ -124,7 +123,7 @@ export default function CreateUser() {
                 <Box>
                   <FormControl
                     id="last_name"
-                    isInvalid={errors.last_name}
+                    isInvalid={errors.last_name ? true : false}
                     isRequired>
                     <FormLabel>Last Name</FormLabel>
                     <Input type="text" {...register('last_name')} />
@@ -135,14 +134,20 @@ export default function CreateUser() {
                   </FormControl>
                 </Box>
               </HStack>
-              <FormControl id="email" isInvalid={errors.email} isRequired>
+              <FormControl
+                id="email"
+                isInvalid={errors.email ? true : false}
+                isRequired>
                 <FormLabel>Email address</FormLabel>
                 <Input type="email" {...register('email')} />
                 <FormErrorMessage>
                   {errors.email && errors.email?.message?.toString()}
                 </FormErrorMessage>
               </FormControl>
-              <FormControl id="password" isInvalid={errors.password} isRequired>
+              <FormControl
+                id="password"
+                isInvalid={errors.password ? true : false}
+                isRequired>
                 <FormLabel>Password</FormLabel>
                 <InputGroup>
                   <Input
@@ -162,7 +167,7 @@ export default function CreateUser() {
               </FormControl>
               <FormControl
                 id="password_confirmation"
-                isInvalid={errors.password_confirmation}
+                isInvalid={errors.password_confirmation ? true : false}
                 isRequired>
                 <FormLabel>Confirm Password</FormLabel>
                 <InputGroup>

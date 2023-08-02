@@ -35,7 +35,7 @@ export default function DataTable({
   async function deleteUser() {
     if (userId) {
       await authApi.delete(`api/admin/users/delete/${userId}`);
-      queryClient.invalidateQueries('users');
+      queryClient.invalidateQueries(['users']);
     }
   }
 
@@ -99,7 +99,3 @@ export default function DataTable({
     </>
   );
 }
-
-// function tableHeaderWrapper(item: string) {
-//   return <Th>{item}</Th>;
-// }

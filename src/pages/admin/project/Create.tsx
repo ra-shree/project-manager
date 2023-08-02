@@ -20,7 +20,7 @@ import { z, ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { authApi } from '../../../utils';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface CreateProjectFormData {
   title: string;
@@ -32,19 +32,18 @@ export default function CreateProject() {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data, isSuccess } = useQuery(['managers'], async () => {
     const response = await authApi.get('/api/admin/users/manager');
     return response.data;
   });
 
-  // const queryClient = useQueryClient();
-  // queryClient();
   async function onSubmit(values: CreateProjectFormData) {
     try {
-      // await api.get('/sanctum/csrf-cookie');
       const res = await authApi.post('/api/admin/projects/create', values);
       if (res.data == 'Project Created') {
+        queryClient.invalidateQueries(['projects']);
         navigate('/admin/projects');
       }
     } catch (err: any) {
@@ -102,7 +101,10 @@ export default function CreateProject() {
           <form method="post" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={4}>
               <Box>
-                <FormControl id="title" isInvalid={errors.title} isRequired>
+                <FormControl
+                  id="title"
+                  isInvalid={errors.title ? true : false}
+                  isRequired>
                   <FormLabel>Project Name</FormLabel>
                   <Input type="text" {...register('title')} />
                   <FormErrorMessage>
@@ -111,7 +113,9 @@ export default function CreateProject() {
                 </FormControl>
               </Box>
               <Box>
-                <FormControl id="description" isInvalid={errors.description}>
+                <FormControl
+                  id="description"
+                  isInvalid={errors.description ? true : false}>
                   <FormLabel>Write a description</FormLabel>
                   <Textarea
                     placeholder="Enter a description for the project"
@@ -129,7 +133,7 @@ export default function CreateProject() {
                 <Select
                   id="manager_id"
                   placeholder="Select option"
-                  isInvalid={errors.manager_id}
+                  isInvalid={errors.manager_id ? true : false}
                   {...register('manager_id')}>
                   {isSuccess &&
                     data.map((manager: any) => (
