@@ -8,7 +8,6 @@ import {
   Link,
   Button,
   Heading,
-  Text,
   useColorModeValue,
   FormErrorMessage,
   Alert,
@@ -26,6 +25,7 @@ interface SignInFormData {
 }
 
 export default function SignInForm() {
+  const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   async function onSubmit(values: SignInFormData) {
@@ -37,24 +37,19 @@ export default function SignInForm() {
         document.location.href = '/dashboard';
       }
     } catch (err: any) {
-      console.log(err);
+      setError(true);
+      setErrorMessage(err.response?.data?.message);
     }
   }
 
   useEffect(() => {
-    let isMounted = true;
-
-    if (errorMessage) {
+    if (error) {
       setTimeout(() => {
-        if (isMounted) {
-          setErrorMessage('');
-        }
+        setError(false);
+        setErrorMessage('');
       }, 3000);
     }
-    return () => {
-      isMounted = false;
-    };
-  }, [errorMessage]);
+  }, [error]);
 
   const schema: ZodType<SignInFormData> = z.object({
     email: z.string().email(),
@@ -78,16 +73,10 @@ export default function SignInForm() {
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
         <Stack align={'center'}>
           <Heading fontSize={'4xl'}>Sign in to your account</Heading>
-          <Text fontSize={'lg'} color={'gray.600'}>
-            to enjoy all of our cool{' '}
-            <Link color={'blue.400'} href="/features">
-              features
-            </Link>{' '}
-            ✌️
-          </Text>
           {errorMessage && (
             <Alert status="error">
               <AlertIcon />
+              {errorMessage}
             </Alert>
           )}
         </Stack>

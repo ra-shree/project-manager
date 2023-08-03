@@ -89,7 +89,6 @@ export default function UserForm({
         queryClient.invalidateQueries(['users']);
       }
     } catch (err: any) {
-      console.log(err);
       setErrorMessage(err.response.data.message);
       setError(true);
     } finally {
