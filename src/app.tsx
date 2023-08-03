@@ -5,7 +5,7 @@ import { Home } from './pages/Home';
 import { SignInForm } from './pages/SignIn';
 import { Dashboard } from './pages/Dashboard';
 import { Projects, ProjectPage, Tasks } from './pages/users';
-import { CreateUser, HomeProject, HomeUser } from './pages/admin';
+import { HomeProject, HomeUser } from './pages/admin';
 import { UserState, getUserProfile } from './features';
 
 export default function App() {
@@ -41,7 +41,6 @@ export default function App() {
         />
         <Route path="/user/tasks" element={<Tasks />} />
         <Route path="/admin/users" element={<HomeUser />} />
-        <Route path="/admin/users/create" element={<CreateUser />} />
         <Route path="/admin/projects" element={<HomeProject />} />
       </Routes>
       <Footer />

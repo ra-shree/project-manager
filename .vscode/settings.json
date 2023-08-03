@@ -3,5 +3,20 @@
   "prettier.proseWrap": "always",
   "prettier.singleQuote": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "prettier.quoteProps": "consistent"
+  "prettier.quoteProps": "consistent",
+  "sqltools.connections": [
+    {
+      "pgOptions": {
+        "query_timeout": 5000,
+        "idleTimeoutMillis": 0
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "Project Manager Database",
+      "database": "project_server",
+      "username": "sail"
+    }
+  ]
 }
