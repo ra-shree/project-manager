@@ -98,7 +98,7 @@ export default function SignInForm() {
           p={8}>
           <form method="post" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={4}>
-              <FormControl id="email" isInvalid={errors.email}>
+              <FormControl id="email" isInvalid={errors.email ? true : false}>
                 <FormLabel>Email address</FormLabel>
                 <Input type="email" {...register('email')} />
                 <FormErrorMessage>
@@ -106,7 +106,9 @@ export default function SignInForm() {
                   {/* (error.isError && error.message) */}
                 </FormErrorMessage>
               </FormControl>
-              <FormControl id="password" isInvalid={errors.password}>
+              <FormControl
+                id="password"
+                isInvalid={errors.password ? true : false}>
                 <FormLabel>Password</FormLabel>
                 <Input type="password" {...register('password')} />
                 <FormErrorMessage>
