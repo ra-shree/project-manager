@@ -22,38 +22,36 @@ import { AddUser } from '..';
 import { UserState } from '../../../features';
 import { UpdateStatusFormData } from './types';
 import { useForm } from 'react-hook-form';
-
-const projectStatusItems = ['Draft', 'On Hold', 'Completed', 'In Progress'];
+import { useEffect } from 'react';
 
 export default function ProjectPage({ userInfo }: { userInfo: UserState }) {
   let queryClient = useQueryClient();
-
   let { current_project_id } = useParams();
-  current_project_id = current_project_id ? current_project_id : '0';
+  current_project_id = current_project_id?.toString();
 
   let projectId = parseInt(current_project_id);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { register, handleSubmit, setValue } = useForm<UpdateStatusFormData>();
+  const { register, handleSubmit, getValues, setValue } =
+    useForm<UpdateStatusFormData>();
 
   const projectQuery = useQuery({
     queryKey: [`project`],
     queryFn: async () => {
-      const response = await authApi.get(
-        `/api/user/projects/${current_project_id}`
-      );
+      const response = await authApi.get(`/api/user/projects/${projectId}`);
       return response.data;
     },
   });
 
   async function onSubmit(values: UpdateStatusFormData) {
+    console.log(getValues('status'));
     try {
       const res = await authApi.patch(
-        `/api/user/projects/status/${current_project_id}`,
+        `/api/user/projects/status/${projectId}`,
         values
       );
-      if (res.data?.status) {
-        setValue('status', res.data?.status);
+      // console.log(res);
+      if (res.status === 200) {
         queryClient.invalidateQueries(['project']);
       }
     } catch (error) {
@@ -77,13 +75,39 @@ export default function ProjectPage({ userInfo }: { userInfo: UserState }) {
                 <Select
                   isDisabled={userInfo.role === 'developer' ? true : false}
                   {...register('status')}
-                  onChange={handleSubmit(onSubmit)}
-                  defaultValue={projectQuery.data.status}>
-                  {projectStatusItems.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
+                  onChange={handleSubmit(onSubmit)}>
+                  <option
+                    key="Draft"
+                    value="Draft"
+                    selected={
+                      projectQuery.data.status === 'Draft' ? true : false
+                    }>
+                    Draft
+                  </option>
+                  <option
+                    key="On Hold"
+                    value="On Hold"
+                    selected={
+                      projectQuery.data.status === 'On Hold' ? true : false
+                    }>
+                    On Hold
+                  </option>
+                  <option
+                    key="Completed"
+                    value="Completed"
+                    selected={
+                      projectQuery.data.status === 'Completed' ? true : false
+                    }>
+                    Completed
+                  </option>
+                  <option
+                    key="In Progress"
+                    value="In Progress"
+                    selected={
+                      projectQuery.data.status === 'In Progress' ? true : false
+                    }>
+                    In Progress
+                  </option>
                 </Select>
               </Box>
               <Spacer />
