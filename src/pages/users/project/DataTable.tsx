@@ -23,13 +23,13 @@ export default function DataTable({
         <Thead>
           <Tr>
             {TableColumns.map((item) => (
-              <Th>{item}</Th>
+              <Th key={item}>{item}</Th>
             ))}
           </Tr>
         </Thead>
         <Tbody>
           {TableData.map((data) => (
-            <Tr>
+            <Tr key={data.id}>
               <Th>
                 <Link
                   as={RouterLink}
@@ -38,7 +38,6 @@ export default function DataTable({
                   {data.title}
                 </Link>
               </Th>
-              {/* <Th>{data.}</Th> */}
               <Th hidden>{data.description}</Th>
               <Th>
                 {formatDistance(

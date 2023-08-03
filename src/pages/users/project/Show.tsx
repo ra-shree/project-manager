@@ -48,7 +48,7 @@ export default function ProjectPage({ userInfo }: { userInfo: UserState }) {
 
   async function onSubmit(values: UpdateStatusFormData) {
     try {
-      const res = await authApi.put(
+      const res = await authApi.patch(
         `/api/user/projects/status/${current_project_id}`,
         values
       );
@@ -77,18 +77,13 @@ export default function ProjectPage({ userInfo }: { userInfo: UserState }) {
                 <Select
                   isDisabled={userInfo.role === 'developer' ? true : false}
                   {...register('status')}
-                  onChange={handleSubmit(onSubmit)}>
-                  {projectStatusItems.map((item) =>
-                    item === projectQuery.data.status ? (
-                      <option key={item} value={item} selected>
-                        {item}
-                      </option>
-                    ) : (
-                      <option key={item} value={item}>
-                        {item}
-                      </option>
-                    )
-                  )}
+                  onChange={handleSubmit(onSubmit)}
+                  defaultValue={projectQuery.data.status}>
+                  {projectStatusItems.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
                 </Select>
               </Box>
               <Spacer />

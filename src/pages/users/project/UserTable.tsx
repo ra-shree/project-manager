@@ -60,13 +60,13 @@ export default function UserTable({
         <Thead>
           <Tr>
             {tableColumns.map((item) => (
-              <Th>{item}</Th>
+              <Th key={item}>{item}</Th>
             ))}
           </Tr>
         </Thead>
         <Tbody>
           {tableData.map((data) => (
-            <Tr>
+            <Tr key={data.id}>
               <Th>{data.first_name}</Th>
               <Th>{data.last_name}</Th>
               <Th>

@@ -89,7 +89,7 @@ export default function AddUser({
                 isInvalid={errors.user_id ? true : false}>
                 {developerQuery.isSuccess ? (
                   developerQuery.data.map((data: any) => (
-                    <option value={data.id}>
+                    <option key={data.id} value={data.id}>
                       {data.email} ({data.first_name + ' ' + data.last_name})
                     </option>
                   ))
