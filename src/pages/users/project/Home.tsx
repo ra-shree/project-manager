@@ -1,7 +1,8 @@
-import { Box, Heading, Flex, Spacer, Spinner } from '@chakra-ui/react';
+import { Box, Heading, Flex, Spacer } from '@chakra-ui/react';
 import { DataTable } from '..';
 import { useQuery } from '@tanstack/react-query';
 import { authApi } from '../../../utils';
+import { Loading } from '../../../components';
 
 export default function Home(): JSX.Element {
   const { data, isSuccess } = useQuery(['projects'], async () => {
@@ -25,7 +26,7 @@ export default function Home(): JSX.Element {
           TableData={data}
         />
       ) : (
-        <Spinner size="xl" />
+        <Loading />
       )}
     </>
   );

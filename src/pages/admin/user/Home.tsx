@@ -10,7 +10,6 @@ import {
   ModalBody,
   ModalCloseButton,
   Spacer,
-  Spinner,
 } from '@chakra-ui/react';
 import { UserForm, UsersTable } from '..';
 import { useDisclosure } from '@chakra-ui/react';
@@ -18,6 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { authApi } from '../../../utils';
 import { useState } from 'react';
 import { UserFormData } from './types';
+import { Loading } from '../../../components';
 
 export default function Home() {
   const [userId, setUserId] = useState<number | null>(null);
@@ -60,9 +60,7 @@ export default function Home() {
           setUpdateUser={setUpdateUser}
         />
       ) : (
-        <Flex className="align-middle">
-          <Spinner size="xl" />
-        </Flex>
+        <Loading />
       )}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
