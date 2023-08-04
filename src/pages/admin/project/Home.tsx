@@ -10,7 +10,6 @@ import {
   ModalBody,
   ModalCloseButton,
   Spacer,
-  Spinner,
 } from '@chakra-ui/react';
 import { ProjectsTable, ProjectForm } from '..';
 import { useDisclosure } from '@chakra-ui/react';
@@ -18,6 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { authApi } from '../../../utils';
 import { useState } from 'react';
 import { ProjectFormData } from './types';
+import { Loading } from '../../../components';
 
 export default function Home() {
   const [projectId, setProjectId] = useState<number | null>(null);
@@ -66,7 +66,7 @@ export default function Home() {
           setUpdateProject={setUpdateProject}
         />
       ) : (
-        <Spinner size="xl" />
+        <Loading />
       )}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

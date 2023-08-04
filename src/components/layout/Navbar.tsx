@@ -15,10 +15,11 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { authApi } from '../../utils';
-import { UserState } from '../../features/user/user';
+import { UserState, resetUser } from '../../features';
 
 interface Links {
   name: string;
@@ -26,7 +27,7 @@ interface Links {
 }
 
 const HomeLinks: Links[] = [
-  { name: 'Home', path: '/home' },
+  { name: 'Home', path: '/' },
   { name: 'Pricing', path: '/pricing' },
   { name: 'About', path: '/about' },
   { name: 'Contact', path: '/contact' },
@@ -44,11 +45,15 @@ const UserLinks: Links[] = [
   { name: 'Tasks', path: '/user/tasks' },
 ];
 
-export default function Navbar({ userInfo }: { userInfo: UserState }) {
+export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state: any) => {
+    return state.user;
+  });
 
   let NavLinks: Links[] = [];
-  if (!userInfo) {
+  if (userInfo.id === 0) {
     NavLinks = HomeLinks;
   } else if (userInfo.role === 'admin') {
     NavLinks = AdminLinks;
@@ -61,7 +66,8 @@ export default function Navbar({ userInfo }: { userInfo: UserState }) {
   async function onLogout() {
     await authApi.post('api/logout');
     localStorage.removeItem('token');
-    document.location.href = '/home';
+    dispatch(resetUser);
+    document.location.href = '/signin';
   }
 
   return (
@@ -103,7 +109,7 @@ export default function Navbar({ userInfo }: { userInfo: UserState }) {
             </HStack>
           </HStack>
 
-          {userInfo.id != 0 ? UserOptions(userInfo, onLogout) : LoginOptions()}
+          {userInfo.id !== 0 ? UserOptions(onLogout, userInfo) : LoginOptions()}
         </Flex>
       </Box>
     </>
@@ -119,7 +125,7 @@ const NavLink = (link: Links) => (
   </Link>
 );
 
-const UserOptions = (userInfo: UserState, onLogout: () => Promise<void>) => (
+const UserOptions = (onLogout: () => Promise<void>, userInfo?: UserState) => (
   <Flex alignItems={'center'}>
     <Menu>
       <MenuButton
@@ -128,7 +134,10 @@ const UserOptions = (userInfo: UserState, onLogout: () => Promise<void>) => (
         variant={'link'}
         cursor={'pointer'}
         minW={0}>
-        <Avatar size={'sm'} name={!userInfo ? '' : userInfo['firstName']} />
+        <Avatar
+          size={'sm'}
+          name={userInfo?.id === 0 ? '' : userInfo?.firstName}
+        />
       </MenuButton>
       <MenuList>
         <MenuItem>Profile</MenuItem>

@@ -10,7 +10,6 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
-  Spinner,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
@@ -18,6 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { TasksTable, TaskForm } from '..';
 import { authApi } from '../../../utils';
 import { TaskFormData } from './types.d';
+import { Loading } from '../../../components';
 
 export default function Home() {
   const [updateTask, setUpdateTask] = useState<TaskFormData>();
@@ -59,7 +59,7 @@ export default function Home() {
           setUpdateTask={setUpdateTask}
         />
       ) : (
-        <Spinner size="xl" />
+        <Loading />
       )}
 
       <Modal isOpen={isOpen} onClose={onClose}>

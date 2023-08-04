@@ -3,7 +3,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Spinner,
   Text,
   Heading,
   Box,
@@ -22,18 +21,21 @@ import { AddUser } from '..';
 import { UserState } from '../../../features';
 import { UpdateStatusFormData } from './types';
 import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Loading } from '../../../components';
 
-export default function ProjectPage({ userInfo }: { userInfo: UserState }) {
+export default function ProjectPage() {
   let queryClient = useQueryClient();
-  let { current_project_id } = useParams();
-  current_project_id = current_project_id?.toString();
-
-  let projectId = parseInt(current_project_id);
+  let { current_project_id: projectId } = useParams();
+  const [userInfo, setUserInfo] = useState<UserState>();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { register, handleSubmit, getValues, setValue } =
-    useForm<UpdateStatusFormData>();
+  const { register, handleSubmit, getValues } = useForm<UpdateStatusFormData>();
+
+  useSelector((state: any) => {
+    setUserInfo(state.user);
+  });
 
   const projectQuery = useQuery({
     queryKey: [`project`],
@@ -73,7 +75,7 @@ export default function ProjectPage({ userInfo }: { userInfo: UserState }) {
             <Flex paddingBottom={3}>
               <Box>
                 <Select
-                  isDisabled={userInfo.role === 'developer' ? true : false}
+                  isDisabled={userInfo?.role === 'developer' ? true : false}
                   {...register('status')}
                   onChange={handleSubmit(onSubmit)}>
                   <option
@@ -134,7 +136,7 @@ export default function ProjectPage({ userInfo }: { userInfo: UserState }) {
                   </InputRightElement>
                 </InputGroup>
 
-                {userInfo.role === 'manager' && (
+                {userInfo?.role === 'manager' && (
                   <Button colorScheme="twitter" onClick={onOpen} padding="20px">
                     Add member
                   </Button>
@@ -150,14 +152,18 @@ export default function ProjectPage({ userInfo }: { userInfo: UserState }) {
                 'Actions',
               ]}
               tableData={projectQuery.data.members}
-              projectId={projectId}
+              projectId={parseInt(projectId ? projectId : '')}
             />
           </>
         ) : (
-          <Spinner size="xl" />
+          <Loading />
         )}
       </Box>
-      <AddUser isOpen={isOpen} onClose={onClose} currentProjectId={projectId} />
+      <AddUser
+        isOpen={isOpen}
+        onClose={onClose}
+        currentProjectId={parseInt(projectId ? projectId : '')}
+      />
     </>
   );
 }
