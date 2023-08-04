@@ -55,7 +55,7 @@ export default function Home() {
           TableColumns={[
             'Project Name',
             'Project Manager',
-            'Created At',
+            'Last Updated',
             'Status',
             'Actions',
           ]}
