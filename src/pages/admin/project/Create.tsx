@@ -19,6 +19,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ProjectFormData } from './types';
 import { AxiosResponse } from 'axios';
 
+const projectStatus = ['Draft', 'On Hold', 'In Progress', 'Completed'];
+
 export default function ProjectForm({
   updateProject,
   setUpdateProject,
@@ -39,6 +41,7 @@ export default function ProjectForm({
     title: z.string().min(3).max(255),
     description: z.string().max(1000).nullable(),
     manager_id: z.number().int().positive(),
+    status: z.string().max(255),
   });
 
   const {
@@ -71,6 +74,7 @@ export default function ProjectForm({
         queryClient.invalidateQueries(['projects']);
       }
     } catch (err: any) {
+      console.log(err);
       setErrorMessage(err.response.data.message);
       setError(true);
     } finally {
@@ -84,6 +88,7 @@ export default function ProjectForm({
       setValue('title', updateProject.title);
       setValue('description', updateProject.description);
       setValue('manager_id', updateProject.manager_id);
+      setValue('status', updateProject.status);
     }
 
     if (error) {
@@ -143,6 +148,20 @@ export default function ProjectForm({
                 {manager.first_name + ' ' + manager.last_name}
               </option>
             ))}
+        </Select>
+      </FormControl>
+      <FormControl paddingBottom={4}>
+        <FormLabel>Select Project Status</FormLabel>
+        <Select
+          id="status"
+          placeholder="Select Project Status"
+          {...register('status')}
+          isInvalid={errors.status ? true : false}>
+          {projectStatus.map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
         </Select>
       </FormControl>
       <Button loadingText="Submitting" colorScheme="twitter" type="submit">

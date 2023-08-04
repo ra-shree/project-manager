@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
-import { formatRelative } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import { useDisclosure } from '@chakra-ui/react';
 import { authApi } from '../../../utils';
 import { useQueryClient } from '@tanstack/react-query';
@@ -78,7 +78,11 @@ export default function ProjectsTable({
                 {data?.manager?.first_name + ' ' + data?.manager?.last_name}
               </Th>
               <Th hidden>{data.description}</Th>
-              <Th>{formatRelative(Date.parse(data.created_at), Date.now())}</Th>
+              <Th>
+                {formatDistanceToNow(Date.parse(data.updated_at), {
+                  addSuffix: true,
+                })}
+              </Th>
               <Th>{data.status}</Th>
               <Th>
                 <Flex className="ml-1 gap-1">
@@ -91,6 +95,7 @@ export default function ProjectsTable({
                         title: data.title,
                         description: data.description,
                         manager_id: data.manager.id,
+                        status: data.status,
                       });
                       onOpen();
                     }}

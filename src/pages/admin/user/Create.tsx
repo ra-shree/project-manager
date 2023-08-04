@@ -103,6 +103,8 @@ export default function UserForm({
       setValue('last_name', updateUser.last_name);
       setValue('email', updateUser.email);
       setValue('role', updateUser.role);
+      setValue('password', 'password');
+      setValue('password_confirmation', 'password');
     }
 
     if (error) {
@@ -162,9 +164,8 @@ export default function UserForm({
         <FormControl
           id="password"
           paddingBottom={4}
-          {...(updateUser
-            ? {}
-            : { isInvalid: errors.password ? true : false, isRequired: true })}>
+          isInvalid={errors.password ? true : false}
+          isRequired>
           <FormLabel>Password</FormLabel>
           <InputGroup paddingBottom={4}>
             <Input
@@ -182,16 +183,15 @@ export default function UserForm({
               </Button>
             </InputRightElement>
           </InputGroup>
+          <FormErrorMessage>
+            {errors.password && errors.password?.message?.toString()}
+          </FormErrorMessage>
         </FormControl>
         <FormControl
           id="password_confirmation"
           paddingBottom={4}
-          {...(updateUser
-            ? {}
-            : {
-                isInvalid: errors.password_confirmation ? true : false,
-                isRequired: true,
-              })}>
+          isInvalid={errors.password_confirmation ? true : false}
+          isRequired>
           <FormLabel>Confirm Password</FormLabel>
           <InputGroup>
             <Input
@@ -200,6 +200,10 @@ export default function UserForm({
               {...register('password_confirmation')}
             />
           </InputGroup>
+          <FormErrorMessage>
+            {errors.password_confirmation &&
+              errors.password_confirmation?.message?.toString()}
+          </FormErrorMessage>
         </FormControl>
         <FormControl paddingBottom={4} isRequired>
           <FormLabel>Select a Role</FormLabel>
