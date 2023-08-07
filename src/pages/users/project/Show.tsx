@@ -15,26 +15,23 @@ import { useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { authApi } from '../../../utils';
 import { useDisclosure } from '@chakra-ui/react';
-import formatRelative from 'date-fns/formatRelative';
-import UserTable from './UserTable';
-import { AddUser } from '..';
+import { formatDistanceToNow } from 'date-fns';
+import { UserTable, AddUser } from '..';
 import { UserState } from '../../../features';
 import { UpdateStatusFormData } from './types';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Loading } from '../../../components';
 
 export default function ProjectPage() {
   let queryClient = useQueryClient();
   let { current_project_id: projectId } = useParams();
-  const [userInfo, setUserInfo] = useState<UserState>();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { register, handleSubmit, getValues } = useForm<UpdateStatusFormData>();
 
-  useSelector((state: any) => {
-    setUserInfo(state.user);
+  const userInfo = useSelector<UserState>((state: any) => {
+    return state.user;
   });
 
   const projectQuery = useQuery({
@@ -115,9 +112,11 @@ export default function ProjectPage() {
               <Spacer />
               <Box>
                 <Text>
-                  {formatRelative(
-                    Date.parse(projectQuery.data.created_at),
-                    Date.now()
+                  {formatDistanceToNow(
+                    Date.parse(projectQuery?.data?.updated_at),
+                    {
+                      addSuffix: true,
+                    }
                   )}
                 </Text>
               </Box>
@@ -136,7 +135,7 @@ export default function ProjectPage() {
                   </InputRightElement>
                 </InputGroup>
 
-                {userInfo?.role === 'manager' && (
+                {userInfo?.role !== 'developer' && (
                   <Button colorScheme="twitter" onClick={onOpen} padding="20px">
                     Add member
                   </Button>
