@@ -40,7 +40,7 @@ const AdminLinks: Links[] = [
 ];
 
 const UserLinks: Links[] = [
-  { name: 'Dashboard', path: '/user/dashboard' },
+  { name: 'Dashboard', path: '/dashboard' },
   { name: 'Projects', path: '/user/projects' },
   { name: 'Tasks', path: '/user/tasks' },
 ];
@@ -51,7 +51,6 @@ export default function Navbar() {
   const userInfo = useSelector((state: any) => {
     return state.user;
   });
-
   let NavLinks: Links[] = [];
   if (userInfo.id === 0) {
     NavLinks = HomeLinks;

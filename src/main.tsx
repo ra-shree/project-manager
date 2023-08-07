@@ -9,10 +9,15 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Home } from './pages/Home';
 import GuestLayout from './components/layout/GuestLayout';
 import { SignInForm } from './pages/SignIn';
-import { Dashboard } from './pages/Dashboard';
 import AuthLayout from './components/layout/AuthLayout';
 import { HomeUser, HomeProject, AdminDashboard } from './pages/admin';
-import { Projects, ProjectPage, Tasks, UserDashboard } from './pages/users';
+import {
+  Projects,
+  ProjectPage,
+  Tasks,
+  UserDashboard,
+  ManagerDashboard,
+} from './pages/users';
 import './index.css';
 
 const queryClient = new QueryClient();
@@ -32,7 +37,8 @@ const router = createBrowserRouter([
     path: '/',
     element: <AuthLayout />,
     children: [
-      { path: '/user/dashboard', element: <UserDashboard /> },
+      { path: '/dashboard', element: <UserDashboard /> },
+      { path: '/manager/dashboard', element: <ManagerDashboard /> },
       { path: '/user/projects', element: <Projects /> },
       { path: '/user/projects/:current_project_id', element: <ProjectPage /> },
       { path: '/user/tasks', element: <Tasks /> },

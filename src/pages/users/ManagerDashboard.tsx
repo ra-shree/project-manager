@@ -30,8 +30,8 @@ export default function UserDashboard() {
     navigate('/admin/dashboard');
   }
 
-  if (userInfo.role === 'manager') {
-    navigate('/manager/dashboard');
+  if (userInfo.role === 'developer') {
+    navigate('/dashboard');
   }
 
   const [reportQuery, newProjectQuery, newTaskQuery] = useQueries({
@@ -50,6 +50,7 @@ export default function UserDashboard() {
           return response.data;
         },
       },
+
       {
         queryKey: [`task.new`],
         queryFn: async () => {
@@ -80,15 +81,10 @@ export default function UserDashboard() {
                   <Box>
                     <Heading size="md">User</Heading>
                     <Text pt="2" fontSize="md">
-                      Tasks:{' '}
-                      {reportQuery?.data?.completed_task_count +
-                        reportQuery?.data?.incomplete_task_count}
+                      Ongoing Projects: {reportQuery?.data?.project_count}
                     </Text>
                     <Text pt="2" fontSize="md">
-                      Completed: {reportQuery?.data?.completed_task_count}
-                    </Text>
-                    <Text pt="2" fontSize="md">
-                      Remaining: {reportQuery?.data?.incomplete_task_count}
+                      Developers: {reportQuery?.data?.developer_count}
                     </Text>
                   </Box>
                 </Stack>
@@ -107,10 +103,19 @@ export default function UserDashboard() {
             <CardBody>
               <Stack divider={<StackDivider />} spacing="4">
                 {newProjectQuery.isSuccess ? (
-                  newProjectQuery.data?.projects?.map((project: any) => {
+                  newProjectQuery.data?.map((project: any) => {
                     return (
                       <Box>
                         <Heading size="md">{project?.title}</Heading>
+                        <Text pt="2" fontSize="md">
+                          Last Updated:{' '}
+                          {formatDistanceToNow(
+                            Date.parse(project?.updated_at),
+                            {
+                              addSuffix: true,
+                            }
+                          )}
+                        </Text>
                         <Text pt="2" fontSize="md">
                           Created:{' '}
                           {formatDistanceToNow(
@@ -130,40 +135,38 @@ export default function UserDashboard() {
             </CardBody>
           </Card>
         </GridItem>
-        {userInfo.role === 'developer' && (
-          <GridItem w="100%" h="10">
-            <Card style={{ maxHeight: '80vh' }}>
-              <CardHeader>
-                <Heading style={headingStyle}>Your Tasks</Heading>
-              </CardHeader>
+        <GridItem w="100%" h="10">
+          <Card style={{ maxHeight: '80vh' }}>
+            <CardHeader>
+              <Heading style={headingStyle}>Tasks</Heading>
+            </CardHeader>
 
-              <CardBody>
-                <Stack divider={<StackDivider />} spacing="4">
-                  {newTaskQuery.isSuccess ? (
-                    newTaskQuery.data?.tasks?.map((task: any) => {
-                      return (
-                        <Box>
-                          <Heading size="md">{task?.title}</Heading>
-                          <Text pt="2" fontSize="md">
-                            Created:{' '}
-                            {formatDistanceToNow(Date.parse(task?.created_at), {
-                              addSuffix: true,
-                            })}
-                          </Text>
-                          <Text pt="2" fontSize="md">
-                            Completed: {task?.completed ? 'Yes' : 'No'}
-                          </Text>
-                        </Box>
-                      );
-                    })
-                  ) : (
-                    <Loading />
-                  )}
-                </Stack>
-              </CardBody>
-            </Card>
-          </GridItem>
-        )}
+            <CardBody>
+              <Stack divider={<StackDivider />} spacing="4">
+                {newTaskQuery.isSuccess ? (
+                  newTaskQuery.data?.map((task: any) => {
+                    return (
+                      <Box>
+                        <Heading size="md">{task?.title}</Heading>
+                        <Text pt="2" fontSize="md">
+                          Created:{' '}
+                          {formatDistanceToNow(Date.parse(task?.created_at), {
+                            addSuffix: true,
+                          })}
+                        </Text>
+                        <Text pt="2" fontSize="md">
+                          Completed: {task?.completed ? 'Yes' : 'No'}
+                        </Text>
+                      </Box>
+                    );
+                  })
+                ) : (
+                  <Loading />
+                )}
+              </Stack>
+            </CardBody>
+          </Card>
+        </GridItem>
       </Grid>
     </Box>
   );

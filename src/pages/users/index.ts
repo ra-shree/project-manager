@@ -8,3 +8,4 @@ export { default as TaskForm } from './task/Create';
 export { default as UserTable } from './project/UserTable';
 export { default as AddUser } from './project/AddUser';
 export { default as UserDashboard } from './UserDashboard';
+export { default as ManagerDashboard } from './ManagerDashboard';
