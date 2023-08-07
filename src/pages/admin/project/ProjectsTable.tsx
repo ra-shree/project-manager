@@ -69,7 +69,7 @@ export default function ProjectsTable({
               <Th>
                 <Link
                   as={RouterLink}
-                  to={`/admin/projects/${data.id}`}
+                  to={`/user/projects/${data.id}`}
                   style={{ textDecoration: 'none' }}>
                   {data.title}
                 </Link>
