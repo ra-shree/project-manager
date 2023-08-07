@@ -7,13 +7,13 @@ import { store } from './utils';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Home } from './pages/Home';
-import './index.css';
 import GuestLayout from './components/layout/GuestLayout';
 import { SignInForm } from './pages/SignIn';
 import { Dashboard } from './pages/Dashboard';
 import AuthLayout from './components/layout/AuthLayout';
-import { HomeUser, HomeProject } from './pages/admin';
-import { Projects, ProjectPage, Tasks } from './pages/users';
+import { HomeUser, HomeProject, AdminDashboard } from './pages/admin';
+import { Projects, ProjectPage, Tasks, UserDashboard } from './pages/users';
+import './index.css';
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -32,13 +32,13 @@ const router = createBrowserRouter([
     path: '/',
     element: <AuthLayout />,
     children: [
-      { path: '/dashboard', element: <Dashboard /> },
+      { path: '/user/dashboard', element: <UserDashboard /> },
       { path: '/user/projects', element: <Projects /> },
       { path: '/user/projects/:current_project_id', element: <ProjectPage /> },
       { path: '/user/tasks', element: <Tasks /> },
       { path: '/admin/users', element: <HomeUser /> },
       { path: '/admin/projects', element: <HomeProject /> },
-      { path: '/admin/dashboard', element: <div>Dashboard</div> },
+      { path: '/admin/dashboard', element: <AdminDashboard /> },
     ],
   },
 ]);
