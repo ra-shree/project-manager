@@ -36,6 +36,8 @@ export default function TasksTable({
         );
         if (response.data == 'Task Deleted') {
           queryClient.invalidateQueries(['tasks']);
+          queryClient.invalidateQueries(['report']);
+          queryClient.invalidateQueries(['task.new']);
         }
       }
     } catch (err) {
