@@ -7,6 +7,11 @@ import {
   Heading,
   Box,
   Flex,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  Spinner,
+  Textarea,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -16,6 +21,11 @@ import {
   ModalFooter,
   Spacer,
   Select,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { useParams } from 'react-router-dom';
@@ -23,19 +33,36 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { authApi, useAppSelector } from '../../../utils';
 import { useDisclosure } from '@chakra-ui/react';
 import { formatDistanceToNow } from 'date-fns';
-import { UserTable, AddUser } from '..';
+import { UserTable, AddUser, TaskForm } from '..';
+import z, { ZodType } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { UserState } from '../../../features';
 import { UpdateStatusFormData } from './types';
 import { useForm } from 'react-hook-form';
 import { Loading } from '../../../components';
+import TaskTable from './TaskTable';
+import { TaskFormData } from '../task/types';
 
 export default function ProjectPage() {
   let queryClient = useQueryClient();
   let { current_project_id: projectId } = useParams();
   const memberSelectModal = useDisclosure();
   const statusChangeModal = useDisclosure();
+  const taskFormModal = useDisclosure();
 
   const { register, handleSubmit } = useForm<UpdateStatusFormData>();
+
+  // const addTask = useForm<TaskFormData>();
+  const schema: ZodType<TaskFormData> = z.object({
+    title: z.string().min(3).max(255),
+    description: z.string().max(500).nullable(),
+    project_id: z.number().int().positive(),
+    user_id: z.number().int().positive(),
+  });
+
+  const addTask = useForm<TaskFormData>({
+    resolver: zodResolver(schema),
+  });
 
   const userInfo = useAppSelector<UserState>((state: any) => {
     return state.user;
@@ -65,6 +92,23 @@ export default function ProjectPage() {
     }
   }
 
+  async function onSubmitCreateTask(values: TaskFormData) {
+    try {
+      // addTask.setValue('project_id', parseInt(projectId ? projectId : ''));
+      const res = await authApi.post(`/api/user/tasks`, values);
+      if (res.data == 'Task Created') {
+        queryClient.invalidateQueries(['project']);
+        queryClient.invalidateQueries(['report']);
+        queryClient.invalidateQueries(['task.new']);
+      }
+    } catch (err: any) {
+      console.log(err);
+    } finally {
+      taskFormModal.onClose();
+      addTask.reset();
+    }
+  }
+
   return (
     <>
       <Box style={{ padding: '1em 1em 1em 2em' }}>
@@ -76,7 +120,7 @@ export default function ProjectPage() {
               </Heading>
             </Box>
             <Spacer />
-            <Flex paddingBottom={3}>
+            <Flex paddingBottom={3} gap={2}>
               <Box>
                 <Select
                   isDisabled={userInfo?.role === 'developer' ? true : false}
@@ -118,6 +162,14 @@ export default function ProjectPage() {
                   </option>
                 </Select>
               </Box>
+              <Box>
+                <Button
+                  colorScheme="green"
+                  padding="20px"
+                  onClick={taskFormModal.onOpen}>
+                  Add Task
+                </Button>
+              </Box>
               <Spacer />
               <Box>
                 <Text>
@@ -154,17 +206,33 @@ export default function ProjectPage() {
                 )}
               </Flex>
             </Flex>
-            <UserTable
-              tableColumns={[
-                'First Name',
-                'Last Name',
-                'Email Address',
-                'Role',
-                'Actions',
-              ]}
-              tableData={projectQuery.data.members}
-              projectId={parseInt(projectId ? projectId : '')}
-            />
+            <Tabs>
+              <TabList>
+                <Tab>Users</Tab>
+                <Tab>Tasks</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <UserTable
+                    tableColumns={[
+                      'First Name',
+                      'Last Name',
+                      'Email Address',
+                      'Role',
+                      'Actions',
+                    ]}
+                    tableData={projectQuery.data.members}
+                    projectId={parseInt(projectId ? projectId : '')}
+                  />
+                </TabPanel>
+                <TabPanel>
+                  <TaskTable
+                    tableColumns={['Title', 'Assigned To', 'Description']}
+                    tableData={projectQuery?.data?.tasks}
+                  />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </>
         ) : (
           <Loading />
@@ -193,6 +261,100 @@ export default function ProjectPage() {
             </Button>
             <Button colorScheme="blue" onClick={handleSubmit(onSubmit)}>
               Yes
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={taskFormModal.isOpen} onClose={taskFormModal.onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create a Task</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form
+              method="post"
+              id="add_task"
+              style={{ padding: '0em 1em 1em 1em' }}
+              onSubmit={handleSubmit(onSubmit)}>
+              <FormControl
+                id="title"
+                paddingBottom={4}
+                isInvalid={addTask.formState.errors.title ? true : false}
+                isRequired>
+                <FormLabel>Choose a title</FormLabel>
+                <Input type="text" {...addTask.register('title')} />
+                <FormErrorMessage>
+                  {addTask.formState.errors.title &&
+                    addTask.formState.errors.title?.message?.toString()}
+                </FormErrorMessage>
+              </FormControl>
+              <FormControl paddingBottom={6}>
+                <FormLabel>Choose a Project</FormLabel>
+                <Input
+                  id="project_id"
+                  placeholder="Select a Project"
+                  {...addTask.register('project_id', { valueAsNumber: true })}
+                  isInvalid={addTask.formState.errors.project_id ? true : false}
+                  defaultValue={projectId ? projectId : ''}
+                  isRequired
+                  hidden
+                />
+                <FormErrorMessage>
+                  {addTask.formState.errors.project_id &&
+                    addTask.formState.errors.project_id?.message?.toString()}
+                </FormErrorMessage>
+              </FormControl>
+              <FormControl paddingBottom={4}>
+                <Textarea
+                  id="description"
+                  placeholder="Add a description"
+                  style={{ height: '10em' }}
+                  isInvalid={
+                    addTask.formState.errors.description ? true : false
+                  }
+                  {...addTask.register('description')}
+                />
+                <FormErrorMessage>
+                  {addTask.formState.errors.description &&
+                    addTask.formState.errors.description?.message?.toString()}
+                </FormErrorMessage>
+              </FormControl>
+              <FormControl paddingBottom={4}>
+                <FormLabel>Assign a Developer</FormLabel>
+                <Select
+                  id="user_id"
+                  placeholder="Select a Developer"
+                  {...addTask.register('user_id', {
+                    valueAsNumber: true,
+                  })}
+                  isInvalid={addTask.formState.errors.user_id ? true : false}>
+                  {projectQuery.isSuccess ? (
+                    projectQuery?.data?.members?.map((data: any) => (
+                      <option key={data.id} value={data.id}>
+                        {data.first_name + ' ' + data.last_name}
+                      </option>
+                    ))
+                  ) : (
+                    <Spinner size="xl" />
+                  )}
+                </Select>
+                <FormErrorMessage>
+                  {addTask.formState.errors.user_id &&
+                    addTask.formState.errors.user_id?.message?.toString()}
+                </FormErrorMessage>
+              </FormControl>
+            </form>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={taskFormModal.onClose}>
+              Close
+            </Button>
+            <Button
+              form="add_task"
+              loadingText="Creating"
+              colorScheme="twitter"
+              onClick={addTask.handleSubmit(onSubmitCreateTask)}>
+              Create Task
             </Button>
           </ModalFooter>
         </ModalContent>
