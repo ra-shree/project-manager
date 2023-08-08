@@ -40,7 +40,7 @@ export default function Home() {
           </Heading>
         </Box>
         <Spacer />
-        <Box>
+        {/* <Box>
           <Button
             colorScheme="whatsapp"
             onClick={() => {
@@ -49,7 +49,7 @@ export default function Home() {
             }}>
             Create New Task
           </Button>
-        </Box>
+        </Box> */}
       </Flex>
       {isSuccess ? (
         <TasksTable
