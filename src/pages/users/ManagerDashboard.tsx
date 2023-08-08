@@ -153,8 +153,8 @@ export default function UserDashboard() {
                       <Box>
                         <Heading size="md">{task?.title}</Heading>
                         <Text pt="2" fontSize="md">
-                          Created:{' '}
-                          {formatDistanceToNow(Date.parse(task?.created_at), {
+                          Last Updated:{' '}
+                          {formatDistanceToNow(Date.parse(task?.updated_at), {
                             addSuffix: true,
                           })}
                         </Text>

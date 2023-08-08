@@ -165,7 +165,7 @@ export default function AdminDashboard() {
                           {project?.manager?.last_name}
                         </Text>
                         <Text pt="2" fontSize="md">
-                          Created:{' '}
+                          Last updated:{' '}
                           {formatDistanceToNow(
                             Date.parse(project?.updated_at),
                             {
