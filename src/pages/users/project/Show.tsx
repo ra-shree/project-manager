@@ -7,30 +7,37 @@ import {
   Heading,
   Box,
   Flex,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  ModalFooter,
   Spacer,
   Select,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { authApi } from '../../../utils';
+import { authApi, useAppSelector } from '../../../utils';
 import { useDisclosure } from '@chakra-ui/react';
 import { formatDistanceToNow } from 'date-fns';
 import { UserTable, AddUser } from '..';
 import { UserState } from '../../../features';
 import { UpdateStatusFormData } from './types';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { Loading } from '../../../components';
 
 export default function ProjectPage() {
   let queryClient = useQueryClient();
   let { current_project_id: projectId } = useParams();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const memberSelectModal = useDisclosure();
+  const statusChangeModal = useDisclosure();
 
-  const { register, handleSubmit, getValues } = useForm<UpdateStatusFormData>();
+  const { register, handleSubmit } = useForm<UpdateStatusFormData>();
 
-  const userInfo = useSelector<UserState>((state: any) => {
+  const userInfo = useAppSelector<UserState>((state: any) => {
     return state.user;
   });
 
@@ -43,18 +50,18 @@ export default function ProjectPage() {
   });
 
   async function onSubmit(values: UpdateStatusFormData) {
-    console.log(getValues('status'));
     try {
       const res = await authApi.patch(
         `/api/user/projects/status/${projectId}`,
         values
       );
-      // console.log(res);
       if (res.status === 200) {
         queryClient.invalidateQueries(['project']);
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      statusChangeModal.onClose();
     }
   }
 
@@ -74,7 +81,9 @@ export default function ProjectPage() {
                 <Select
                   isDisabled={userInfo?.role === 'developer' ? true : false}
                   {...register('status')}
-                  onChange={handleSubmit(onSubmit)}>
+                  onChange={() => {
+                    statusChangeModal.onOpen();
+                  }}>
                   <option
                     key="Draft"
                     value="Draft"
@@ -136,7 +145,10 @@ export default function ProjectPage() {
                 </InputGroup>
 
                 {userInfo?.role !== 'developer' && (
-                  <Button colorScheme="twitter" onClick={onOpen} padding="20px">
+                  <Button
+                    colorScheme="twitter"
+                    onClick={memberSelectModal.onOpen}
+                    padding="20px">
                     Add member
                   </Button>
                 )}
@@ -159,10 +171,32 @@ export default function ProjectPage() {
         )}
       </Box>
       <AddUser
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={memberSelectModal.isOpen}
+        onClose={memberSelectModal.onClose}
         currentProjectId={parseInt(projectId ? projectId : '')}
       />
+      <Modal
+        isOpen={statusChangeModal.isOpen}
+        onClose={statusChangeModal.onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Update Project Status</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text mb="1rem">
+              Are you sure you want update status of the project?
+            </Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={statusChangeModal.onClose}>
+              Close
+            </Button>
+            <Button colorScheme="blue" onClick={handleSubmit(onSubmit)}>
+              Yes
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 }

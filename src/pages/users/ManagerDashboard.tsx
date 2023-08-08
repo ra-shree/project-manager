@@ -81,7 +81,11 @@ export default function UserDashboard() {
                   <Box>
                     <Heading size="md">User</Heading>
                     <Text pt="2" fontSize="md">
-                      Ongoing Projects: {reportQuery?.data?.project_count}
+                      Involved Projects: {reportQuery?.data?.project_count}
+                    </Text>
+                    <Text pt="2" fontSize="md">
+                      Tasks Completed Today:{' '}
+                      {reportQuery?.data?.completed_task_count}
                     </Text>
                     <Text pt="2" fontSize="md">
                       Developers: {reportQuery?.data?.developer_count}

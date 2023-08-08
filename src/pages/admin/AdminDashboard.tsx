@@ -120,7 +120,7 @@ export default function AdminDashboard() {
             <CardBody>
               <Stack divider={<StackDivider />} spacing="4">
                 {newProjectQuery.isSuccess ? (
-                  newProjectQuery.data.map((project: any) => {
+                  newProjectQuery.data?.map((project: any) => {
                     return (
                       <Box>
                         <Heading size="md">{project?.title}</Heading>
