@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Checkbox } from '@chakra-ui/react';
 import { authApi } from '../../../utils';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface TaskCheckboxProps {
   id: number;
@@ -13,6 +14,7 @@ export default function TaskCheckbox({
   taskData: TaskCheckboxProps;
 }): JSX.Element {
   const [checked, setChecked] = useState<boolean>(taskData.completed);
+  const queryClient = useQueryClient();
 
   async function onChecked() {
     try {
@@ -23,6 +25,9 @@ export default function TaskCheckbox({
         }
       );
       setChecked(response.data.completed);
+      queryClient.invalidateQueries(['tasks']);
+      queryClient.invalidateQueries(['report']);
+      queryClient.invalidateQueries(['task.new']);
     } catch (err) {
       console.log(err);
     }
