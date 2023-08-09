@@ -81,10 +81,10 @@ export default function AdminDashboard() {
                   <Box>
                     <Heading size="md">Users</Heading>
                     <Text pt="2" fontSize="md">
-                      Developer Count: {reportQuery?.data?.developer_count}
+                      Developers: {reportQuery?.data?.developers}
                     </Text>
                     <Text pt="2" fontSize="md">
-                      Manager Count: {reportQuery?.data?.manager_count}
+                      Managers: {reportQuery?.data?.managers}
                     </Text>
                   </Box>
                   <Box>
