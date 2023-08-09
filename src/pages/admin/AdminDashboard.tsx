@@ -25,15 +25,16 @@ export default function AdminDashboard() {
     useQueries({
       queries: [
         {
-          queryKey: [`report`],
+          queryKey: [`report.admin`],
           queryFn: async () => {
             const response = await authApi.get(`/api/admin/summary/count`);
             return response.data;
           },
+          cacheTime: 1 * 60 * 1000,
         },
 
         {
-          queryKey: [`project.new`],
+          queryKey: [`project.admin.new`],
           queryFn: async () => {
             const response = await authApi.get(
               `/api/admin/summary/project/new`
@@ -42,7 +43,7 @@ export default function AdminDashboard() {
           },
         },
         {
-          queryKey: [`project.updated`],
+          queryKey: [`project.admin.updated`],
           queryFn: async () => {
             const response = await authApi.get(
               `/api/admin/summary/project/updated`
@@ -51,7 +52,7 @@ export default function AdminDashboard() {
           },
         },
         {
-          queryKey: [`task.new`],
+          queryKey: [`task.admin.new`],
           queryFn: async () => {
             const response = await authApi.get(`/api/admin/summary/task/new`);
             return response.data;
