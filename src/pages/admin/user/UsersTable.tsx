@@ -42,7 +42,7 @@ export default function UsersTable({
 
   async function deleteUser() {
     if (userId) {
-      await authApi.delete(`api/admin/users/delete/${userId}`);
+      await authApi.delete(`/api/admin/users/${userId}`);
       queryClient.invalidateQueries(['users']);
     }
   }

@@ -48,7 +48,7 @@ export default function ProjectsTable({
 
   async function deleteProject() {
     if (projectId) {
-      await authApi.delete(`api/admin/projects/delete/${projectId}`);
+      await authApi.delete(`/api/admin/projects/${projectId}`);
       queryClient.invalidateQueries(['projects']);
     }
   }

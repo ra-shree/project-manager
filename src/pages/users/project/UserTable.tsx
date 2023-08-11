@@ -40,7 +40,7 @@ export default function UserTable({
     try {
       if (userId) {
         const res = await authApi.delete(
-          `api/user/projects/${projectId}/remove/${userId}`
+          `api/user/members/${projectId}/remove/${userId}`
         );
         if (res.data == 'Member Removed') {
           queryClient.invalidateQueries(['project']);
@@ -48,6 +48,8 @@ export default function UserTable({
         }
       }
     } catch (err) {
+      console.log(projectId);
+      console.log(userId);
       console.log(err);
     } finally {
       onClose();
@@ -82,7 +84,7 @@ export default function UserTable({
                 <DeleteIcon
                   className="ml-6 cursor-pointer"
                   onClick={() => {
-                    setUserId(data.id);
+                    setUserId(data?.id);
                     onOpen();
                   }}
                 />

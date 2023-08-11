@@ -81,9 +81,9 @@ export default function UserForm({
     let res: AxiosResponse<any, any>;
     try {
       if (!updateUser) {
-        res = await authApi.post('api/admin/users/create', values);
+        res = await authApi.post('/api/admin/users', values);
       } else {
-        res = await authApi.put(`api/admin/users/update/${userId}`, values);
+        res = await authApi.put(`/api/admin/users/${userId}`, values);
       }
       if (res.data == 'User Created' || res.data == 'User Updated') {
         queryClient.invalidateQueries(['users']);

@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { authApi } from '../../../utils';
-import { useQueries, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TaskFormData } from './types.d';
 import { AxiosResponse } from 'axios';
 import { useEffect } from 'react';
@@ -43,25 +43,35 @@ export default function TaskForm({
     resolver: zodResolver(schema),
   });
 
-  const [projectsQuery, developerQuery] = useQueries({
-    queries: [
-      {
-        queryKey: [`projects`],
-        queryFn: async () => {
-          const response = await authApi.get(`/api/user/projects`);
-          return response.data;
-        },
-      },
-
-      {
-        queryKey: [`project.developers`],
-        queryFn: async () => {
-          const response = await authApi.get(`/api/user/users/developer`);
-          return response.data;
-        },
-      },
-    ],
+  const developerQuery = useQuery(['project.developers'], async () => {
+    const response = await authApi.get(
+      `/api/user/projects/${updateTask?.project_id}/members`
+    );
+    return response.data;
   });
+
+  // const [projectsQuery, developerQuery] = useQueries({
+  //   queries: [
+  //     {
+  //       queryKey: [`projects`],
+  //       queryFn: async () => {
+  //         const response = await authApi.get(`/api/user/projects`);
+  //         return response.data;
+  //       },
+  //     },
+
+  //     {
+  //       queryKey: [`project.developers`],
+  //       queryFn: async () => {
+  //         // const response = await authApi.get(`/api/user/users/developer`);
+  //         const response = await authApi.get(
+  //           `/api/user/projects/${updateTask?.project_id}/members`
+  //         );
+  //         return response.data;
+  //       },
+  //     },
+  //   ],
+  // });
 
   async function onSubmit(values: TaskFormData) {
     try {
@@ -69,10 +79,7 @@ export default function TaskForm({
       if (!updateTask) {
         res = await authApi.post(`/api/user/tasks`, values);
       } else {
-        res = await authApi.put(
-          `/api/user/tasks/update/${updateTask.id}`,
-          values
-        );
+        res = await authApi.put(`/api/user/tasks/${updateTask.id}`, values);
       }
       if (res.data == 'Task Created' || res.data == 'Task Updated') {
         queryClient.invalidateQueries(['tasks']);
@@ -111,9 +118,18 @@ export default function TaskForm({
           {errors.title && errors.title?.message?.toString()}
         </FormErrorMessage>
       </FormControl>
-      <FormControl paddingBottom={6}>
-        <FormLabel>Choose a Project</FormLabel>
-        <Select
+      <FormControl>
+        {/* <FormLabel>Choose a Project</FormLabel> */}
+        <Input
+          id="project_id"
+          placeholder="Select a Project"
+          {...register('project_id', { valueAsNumber: true })}
+          isInvalid={errors.project_id ? true : false}
+          defaultValue={updateTask?.project_id ? updateTask.project_id : ''}
+          isRequired
+          hidden
+        />
+        {/* <Select
           id="project_id"
           placeholder="Select a Project"
           {...register('project_id', { valueAsNumber: true })}
@@ -128,12 +144,13 @@ export default function TaskForm({
           ) : (
             <Spinner size="xl" />
           )}
-        </Select>
+        </Select> */}
         <FormErrorMessage>
           {errors.project_id && errors.project_id?.message?.toString()}
         </FormErrorMessage>
       </FormControl>
       <FormControl paddingBottom={4}>
+        <FormLabel>Update the description</FormLabel>
         <Textarea
           id="description"
           placeholder="Add a description"

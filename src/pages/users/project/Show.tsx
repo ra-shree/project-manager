@@ -33,7 +33,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { authApi, useAppSelector } from '../../../utils';
 import { useDisclosure } from '@chakra-ui/react';
 import { formatDistanceToNow } from 'date-fns';
-import { UserTable, AddUser, TaskForm } from '..';
+import { UserTable, AddUser } from '..';
 import z, { ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserState } from '../../../features';
@@ -79,7 +79,7 @@ export default function ProjectPage() {
   async function onSubmit(values: UpdateStatusFormData) {
     try {
       const res = await authApi.patch(
-        `/api/user/projects/status/${projectId}`,
+        `/api/user/projects/${projectId}`,
         values
       );
       if (res.status === 200) {
@@ -241,7 +241,7 @@ export default function ProjectPage() {
       <AddUser
         isOpen={memberSelectModal.isOpen}
         onClose={memberSelectModal.onClose}
-        currentProjectId={parseInt(projectId ? projectId : '')}
+        currentProjectId={projectId ? projectId : ''}
       />
       <Modal
         isOpen={statusChangeModal.isOpen}
@@ -288,8 +288,7 @@ export default function ProjectPage() {
                     addTask.formState.errors.title?.message?.toString()}
                 </FormErrorMessage>
               </FormControl>
-              <FormControl paddingBottom={6}>
-                <FormLabel>Choose a Project</FormLabel>
+              <FormControl>
                 <Input
                   id="project_id"
                   placeholder="Select a Project"
@@ -305,6 +304,7 @@ export default function ProjectPage() {
                 </FormErrorMessage>
               </FormControl>
               <FormControl paddingBottom={4}>
+                <FormLabel>Task description</FormLabel>
                 <Textarea
                   id="description"
                   placeholder="Add a description"

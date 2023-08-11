@@ -62,12 +62,9 @@ export default function ProjectForm({
     try {
       let res: AxiosResponse<any, any>;
       if (!updateProject) {
-        res = await authApi.post('/api/admin/projects/create', values);
+        res = await authApi.post('/api/admin/projects', values);
       } else {
-        res = await authApi.put(
-          `/api/admin/projects/update/${projectId}`,
-          values
-        );
+        res = await authApi.put(`/api/admin/projects/${projectId}`, values);
       }
 
       if (res.data == 'Project Created' || res.data == 'Project Updated') {

@@ -26,9 +26,9 @@ export default function AddUser({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  currentProjectId: number;
+  currentProjectId?: string;
 }) {
-  let projectId = currentProjectId;
+  let projectId = parseInt(currentProjectId ? currentProjectId : '0');
   const queryClient = useQueryClient();
   const schema: ZodType<AddMemberFormData> = z.object({
     user_id: z.number(),
@@ -47,20 +47,17 @@ export default function AddUser({
   const developerQuery = useQuery({
     queryKey: [`project.developers`],
     queryFn: async () => {
-      const response = await authApi.get(`/api/user/projects/${projectId}/add`);
+      const response = await authApi.get(`/api/user/members/${projectId}/add`);
       return response.data;
     },
   });
 
   async function addMemberOnSubmit(values: AddMemberFormData) {
     try {
-      const res = await authApi.post(
-        `/api/user/projects/${projectId}/add`,
-        values
-      );
-      if (res.data == 'Developer added to Project') {
-        queryClient.invalidateQueries(['project.developers']);
+      const res = await authApi.post(`/api/user/members/${projectId}`, values);
+      if (res.data == 'Developer Added To Project') {
         queryClient.invalidateQueries(['project']);
+        queryClient.invalidateQueries(['project.developers']);
       }
     } catch (err: any) {
       console.log(err);

@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { Navbar, Footer, Loading } from '..';
@@ -7,6 +7,8 @@ import { authApi } from '../../utils';
 
 export default function AuthLayout() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const userQuery = useQuery(
     ['user'],
     async () => {
@@ -27,6 +29,10 @@ export default function AuthLayout() {
       },
     }
   );
+
+  if (userQuery.isError) {
+    navigate('/login');
+  }
 
   if (userQuery.isFetching) {
     return <Loading />;

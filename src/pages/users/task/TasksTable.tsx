@@ -31,9 +31,7 @@ export default function TasksTable({
   async function deleteTask() {
     try {
       if (taskId) {
-        const response = await authApi.delete(
-          `api/user/tasks/delete/${taskId}`
-        );
+        const response = await authApi.delete(`api/user/tasks/${taskId}`);
         if (response.data == 'Task Deleted') {
           queryClient.invalidateQueries(['tasks']);
           queryClient.invalidateQueries(['report']);
