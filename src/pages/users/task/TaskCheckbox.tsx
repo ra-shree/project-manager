@@ -19,7 +19,7 @@ export default function TaskCheckbox({
   async function onChecked() {
     try {
       const response = await authApi.patch(`api/user/tasks/${taskData.id}`, {
-        body: JSON.stringify({ completed: !checked }),
+        completed: !checked,
       });
       setChecked(response.data.completed);
       queryClient.invalidateQueries(['tasks']);

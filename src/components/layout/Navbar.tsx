@@ -16,7 +16,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { authApi } from '../../utils';
 import { UserState, resetUser } from '../../features';

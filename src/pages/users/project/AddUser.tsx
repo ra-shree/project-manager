@@ -47,14 +47,14 @@ export default function AddUser({
   const developerQuery = useQuery({
     queryKey: [`project.developers`],
     queryFn: async () => {
-      const response = await authApi.get(`/api/user/members/${projectId}/add`);
+      const response = await authApi.get(`/api/user/members/${projectId}`);
       return response.data;
     },
   });
 
   async function addMemberOnSubmit(values: AddMemberFormData) {
     try {
-      const res = await authApi.post(`/api/user/members/${projectId}`, values);
+      const res = await authApi.post(`/api/user/members`, values);
       if (res.data == 'Developer Added To Project') {
         queryClient.invalidateQueries(['project']);
         queryClient.invalidateQueries(['project.developers']);
