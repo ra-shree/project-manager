@@ -44,7 +44,10 @@ export default function UserTable({
         );
         if (res.data == 'Member Removed') {
           queryClient.invalidateQueries(['project']);
-          queryClient.invalidateQueries(['project.developers']);
+          queryClient.invalidateQueries([
+            'project.developers',
+            projectId.toString(),
+          ]);
         }
       }
     } catch (err) {

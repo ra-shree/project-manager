@@ -15,9 +15,10 @@ import {
 import z, { ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { authApi } from '../../../utils';
 import { AddMemberFormData } from './types';
+import { useFetchDeveloper } from '../../../hooks/users/useFetchDeveloper';
 
 export default function AddUser({
   isOpen,
@@ -28,7 +29,6 @@ export default function AddUser({
   onClose: () => void;
   currentProjectId?: string;
 }) {
-  let projectId = parseInt(currentProjectId ? currentProjectId : '0');
   const queryClient = useQueryClient();
   const schema: ZodType<AddMemberFormData> = z.object({
     user_id: z.number(),
@@ -44,20 +44,15 @@ export default function AddUser({
     resolver: zodResolver(schema),
   });
 
-  const developerQuery = useQuery({
-    queryKey: [`project.developers`],
-    queryFn: async () => {
-      const response = await authApi.get(`/api/user/members/${projectId}`);
-      return response.data;
-    },
-  });
+  const { data: developer, isSuccess: developerFetchSuccess } =
+    useFetchDeveloper({ projectId: currentProjectId });
 
   async function addMemberOnSubmit(values: AddMemberFormData) {
     try {
       const res = await authApi.post(`/api/user/members`, values);
       if (res.data == 'Developer Added To Project') {
         queryClient.invalidateQueries(['project']);
-        queryClient.invalidateQueries(['project.developers']);
+        queryClient.invalidateQueries(['project.developers', currentProjectId]);
       }
     } catch (err: any) {
       console.log(err);
@@ -84,8 +79,8 @@ export default function AddUser({
                 placeholder="Select a Developer"
                 {...register('user_id', { valueAsNumber: true })}
                 isInvalid={errors.user_id ? true : false}>
-                {developerQuery.isSuccess ? (
-                  developerQuery.data.map((data: any) => (
+                {developerFetchSuccess ? (
+                  developer?.map((data: any) => (
                     <option key={data.id} value={data.id}>
                       {data.email} ({data.first_name + ' ' + data.last_name})
                     </option>
@@ -97,7 +92,7 @@ export default function AddUser({
               <Input
                 id="project_id"
                 type="number"
-                value={projectId}
+                value={parseInt(currentProjectId ? currentProjectId : '0')}
                 {...register('project_id', { valueAsNumber: true })}
                 isInvalid={errors.project_id ? true : false}
                 hidden

@@ -29,7 +29,7 @@ import {
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { useParams } from 'react-router-dom';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { authApi, useAppSelector } from '../../../utils';
 import { useDisclosure } from '@chakra-ui/react';
 import { formatDistanceToNow } from 'date-fns';
@@ -42,6 +42,7 @@ import { useForm } from 'react-hook-form';
 import { Loading } from '../../../components';
 import TaskTable from './TaskTable';
 import { TaskFormData } from '../task/types';
+import { useFetchProject } from '../../../hooks/users/useFetchProject';
 
 export default function ProjectPage() {
   let queryClient = useQueryClient();
@@ -52,7 +53,6 @@ export default function ProjectPage() {
 
   const { register, handleSubmit } = useForm<UpdateStatusFormData>();
 
-  // const addTask = useForm<TaskFormData>();
   const schema: ZodType<TaskFormData> = z.object({
     title: z.string().min(3).max(255),
     description: z.string().max(500).nullable(),
@@ -68,12 +68,8 @@ export default function ProjectPage() {
     return state.user;
   });
 
-  const projectQuery = useQuery({
-    queryKey: [`project`],
-    queryFn: async () => {
-      const response = await authApi.get(`/api/user/projects/${projectId}`);
-      return response.data;
-    },
+  const { data: project, isSuccess: projectFetchSuccess } = useFetchProject({
+    projectId,
   });
 
   async function onSubmit(values: UpdateStatusFormData) {
@@ -99,7 +95,7 @@ export default function ProjectPage() {
       if (res.data == 'Task Created') {
         queryClient.invalidateQueries(['project']);
         queryClient.invalidateQueries(['report']);
-        queryClient.invalidateQueries(['task.new']);
+        queryClient.invalidateQueries(['task.summary']);
       }
     } catch (err: any) {
       console.log(err);
@@ -112,11 +108,11 @@ export default function ProjectPage() {
   return (
     <>
       <Box style={{ padding: '1em 1em 1em 2em' }}>
-        {projectQuery.isSuccess ? (
+        {projectFetchSuccess ? (
           <>
             <Box paddingBottom={3}>
               <Heading size="lg" h={8}>
-                {projectQuery.data.title}
+                {project?.title}
               </Heading>
             </Box>
             <Spacer />
@@ -131,33 +127,25 @@ export default function ProjectPage() {
                   <option
                     key="Draft"
                     value="Draft"
-                    selected={
-                      projectQuery.data.status === 'Draft' ? true : false
-                    }>
+                    selected={project?.status === 'Draft' ? true : false}>
                     Draft
                   </option>
                   <option
                     key="On Hold"
                     value="On Hold"
-                    selected={
-                      projectQuery.data.status === 'On Hold' ? true : false
-                    }>
+                    selected={project?.status === 'On Hold' ? true : false}>
                     On Hold
                   </option>
                   <option
                     key="Completed"
                     value="Completed"
-                    selected={
-                      projectQuery.data.status === 'Completed' ? true : false
-                    }>
+                    selected={project?.status === 'Completed' ? true : false}>
                     Completed
                   </option>
                   <option
                     key="In Progress"
                     value="In Progress"
-                    selected={
-                      projectQuery.data.status === 'In Progress' ? true : false
-                    }>
+                    selected={project?.status === 'In Progress' ? true : false}>
                     In Progress
                   </option>
                 </Select>
@@ -173,18 +161,15 @@ export default function ProjectPage() {
               <Spacer />
               <Box>
                 <Text>
-                  {formatDistanceToNow(
-                    Date.parse(projectQuery?.data?.updated_at),
-                    {
-                      addSuffix: true,
-                    }
-                  )}
+                  {formatDistanceToNow(Date.parse(project?.updated_at), {
+                    addSuffix: true,
+                  })}
                 </Text>
               </Box>
             </Flex>
 
             <Box paddingBottom="4">
-              <Text>{projectQuery.data.description}</Text>
+              <Text>{project?.description}</Text>
             </Box>
             <Flex className="flex" paddingBottom={2}>
               <Box flex="1"></Box>
@@ -221,14 +206,14 @@ export default function ProjectPage() {
                       'Role',
                       'Actions',
                     ]}
-                    tableData={projectQuery.data.members}
+                    tableData={project?.members}
                     projectId={parseInt(projectId ? projectId : '')}
                   />
                 </TabPanel>
                 <TabPanel>
                   <TaskTable
                     tableColumns={['Title', 'Assigned To', 'Description']}
-                    tableData={projectQuery?.data?.tasks}
+                    tableData={project?.tasks}
                   />
                 </TabPanel>
               </TabPanels>
@@ -328,8 +313,8 @@ export default function ProjectPage() {
                     valueAsNumber: true,
                   })}
                   isInvalid={addTask.formState.errors.user_id ? true : false}>
-                  {projectQuery.isSuccess ? (
-                    projectQuery?.data?.members?.map((data: any) => (
+                  {projectFetchSuccess ? (
+                    project?.members?.map((data: any) => (
                       <option key={data.id} value={data.id}>
                         {data.first_name + ' ' + data.last_name}
                       </option>

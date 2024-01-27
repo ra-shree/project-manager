@@ -13,21 +13,17 @@ import {
 } from '@chakra-ui/react';
 import { UserForm, UsersTable } from '..';
 import { useDisclosure } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
-import { authApi } from '../../../utils';
 import { useState } from 'react';
 import { UserFormData } from './types';
 import { Loading } from '../../../components';
+import { useFetchUsers } from '../../../hooks/admin/useFetchUsers';
 
 export default function Home() {
   const [userId, setUserId] = useState<number | null>(null);
   const [updateUser, setUpdateUser] = useState<UserFormData>();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { data, isSuccess } = useQuery(['users'], async () => {
-    const response = await authApi.get('/api/admin/users');
-    return response.data;
-  });
+  const { data: users, isSuccess } = useFetchUsers();
 
   return (
     <>
@@ -53,7 +49,7 @@ export default function Home() {
       {isSuccess ? (
         <UsersTable
           TableColumns={['First Name', 'Last Name', 'Email', 'Role', 'Actions']}
-          TableData={data}
+          TableData={users}
           onOpen={onOpen}
           userId={userId}
           setUserId={setUserId}

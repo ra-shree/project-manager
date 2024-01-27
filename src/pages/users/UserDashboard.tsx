@@ -11,11 +11,12 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Loading } from '../../components';
-import { useQueries } from '@tanstack/react-query';
-import { authApi } from '../../utils';
 import { formatDistanceToNow } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useFetchReport } from '../../hooks/dashboard/useFetchReport';
+import { useFetchProjectSummary } from '../../hooks/dashboard/useFetchProjectSummary';
+import { useFetchTaskSummary } from '../../hooks/dashboard/useFetchTaskSummary';
 
 const headingStyle = {
   fontWeight: 'bolder',
@@ -34,31 +35,11 @@ export default function UserDashboard() {
     navigate('/manager/dashboard');
   }
 
-  const [reportQuery, newProjectQuery, newTaskQuery] = useQueries({
-    queries: [
-      {
-        queryKey: [`report`],
-        queryFn: async () => {
-          const response = await authApi.get(`/api/user/summary/count`);
-          return response.data;
-        },
-      },
-      {
-        queryKey: [`project.new`],
-        queryFn: async () => {
-          const response = await authApi.get(`/api/user/summary/projects`);
-          return response.data;
-        },
-      },
-      {
-        queryKey: [`task.new`],
-        queryFn: async () => {
-          const response = await authApi.get(`/api/user/summary/tasks`);
-          return response.data;
-        },
-      },
-    ],
-  });
+  const { data: report, isSuccess: reportFetchSuccess } = useFetchReport();
+  const { data: projectSummary, isSuccess: projectFetchSuccess } =
+    useFetchProjectSummary();
+  const { data: taskSummary, isSuccess: taskFetchSuccess } =
+    useFetchTaskSummary();
 
   return (
     <Box style={{ padding: '1em 1em 1em 2em' }}>
@@ -74,21 +55,21 @@ export default function UserDashboard() {
             <CardHeader>
               <Heading style={headingStyle}>Summary Report</Heading>
             </CardHeader>
-            {reportQuery.isSuccess ? (
+            {reportFetchSuccess ? (
               <CardBody>
                 <Stack divider={<StackDivider />} spacing="4">
                   <Box>
                     <Heading size="md">User</Heading>
                     <Text pt="2" fontSize="md">
                       Tasks:{' '}
-                      {reportQuery?.data?.completed_task_count +
-                        reportQuery?.data?.incomplete_task_count}
+                      {report?.completed_task_count +
+                        report?.incomplete_task_count}
                     </Text>
                     <Text pt="2" fontSize="md">
-                      Completed: {reportQuery?.data?.completed_task_count}
+                      Completed: {report?.completed_task_count}
                     </Text>
                     <Text pt="2" fontSize="md">
-                      Remaining: {reportQuery?.data?.incomplete_task_count}
+                      Remaining: {report?.incomplete_task_count}
                     </Text>
                   </Box>
                 </Stack>
@@ -106,8 +87,8 @@ export default function UserDashboard() {
 
             <CardBody>
               <Stack divider={<StackDivider />} spacing="4">
-                {newProjectQuery.isSuccess ? (
-                  newProjectQuery.data?.projects?.map((project: any) => {
+                {projectFetchSuccess ? (
+                  projectSummary?.projects?.map((project: any) => {
                     return (
                       <Box>
                         <Heading size="md">{project?.title}</Heading>
@@ -139,8 +120,8 @@ export default function UserDashboard() {
 
               <CardBody>
                 <Stack divider={<StackDivider />} spacing="4">
-                  {newTaskQuery.isSuccess ? (
-                    newTaskQuery.data?.tasks?.map((task: any) => {
+                  {taskFetchSuccess ? (
+                    taskSummary?.tasks?.map((task: any) => {
                       return (
                         <Box>
                           <Heading size="md">{task?.title}</Heading>

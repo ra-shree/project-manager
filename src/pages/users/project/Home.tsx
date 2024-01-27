@@ -1,14 +1,10 @@
 import { Box, Heading, Flex, Spacer } from '@chakra-ui/react';
 import { DataTable } from '..';
-import { useQuery } from '@tanstack/react-query';
-import { authApi } from '../../../utils';
 import { Loading } from '../../../components';
+import { useFetchProjects } from '../../../hooks/users/useFetchProjects';
 
 export default function Home(): JSX.Element {
-  const { data, isSuccess } = useQuery(['projects'], async () => {
-    const response = await authApi.get('/api/user/projects');
-    return response.data;
-  });
+  const { data: projects, isSuccess } = useFetchProjects();
 
   return (
     <>
@@ -23,7 +19,7 @@ export default function Home(): JSX.Element {
       {isSuccess ? (
         <DataTable
           TableColumns={['Project Name', 'Created', 'Last Updated', 'Status']}
-          TableData={data}
+          TableData={projects}
         />
       ) : (
         <Loading />
