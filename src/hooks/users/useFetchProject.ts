@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { authApi } from '../../utils/axios';
+import { authApi } from '@utils/axios';
 
 export const useFetchProject = ({ projectId }: { projectId?: string }) => {
   return useQuery({

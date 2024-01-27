@@ -10,9 +10,9 @@ import {
 import { TaskCheckbox } from '..';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
-import { authApi } from '../../../utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { TaskFormData } from './types.d';
+import { authApi } from '@utils/axios';
 
 export default function TasksTable({
   tableColumns,

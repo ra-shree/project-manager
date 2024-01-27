@@ -21,7 +21,7 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
 import { useDisclosure } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { authApi } from '../../../utils';
+import { authApi } from '@utils/axios';
 
 export default function UserTable({
   tableColumns,

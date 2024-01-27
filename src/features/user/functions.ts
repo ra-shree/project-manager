@@ -1,4 +1,4 @@
-import { authApi } from '../../utils/axios';
+import { authApi } from '@utils/axios';
 import { UserState } from './user';
 
 export default async function getUserProfile() {

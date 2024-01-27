@@ -10,13 +10,15 @@ import {
   StackDivider,
   Text,
 } from '@chakra-ui/react';
-import { Loading } from '../../components';
 import { formatDistanceToNow } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useFetchReport } from '../../hooks/dashboard/useFetchReport';
-import { useFetchProjectSummary } from '../../hooks/dashboard/useFetchProjectSummary';
-import { useFetchTaskSummary } from '../../hooks/dashboard/useFetchTaskSummary';
+import {
+  useFetchProjectSummary,
+  useFetchReport,
+  useFetchTaskSummary,
+} from '@hooks/dashboard';
+import { Loading } from '@components/ui';
 
 const headingStyle = {
   fontWeight: 'bolder',

@@ -15,8 +15,8 @@ import { ProjectsTable, ProjectForm } from '..';
 import { useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
 import { ProjectFormData } from './types';
-import { Loading } from '../../../components';
-import { useFetchProjects } from '../../../hooks/admin/useFetchProjects';
+import { useFetchProjects } from '@hooks/admin';
+import { Loading } from '@components/ui';
 
 export default function Home() {
   const [projectId, setProjectId] = useState<number | null>(null);

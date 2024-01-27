@@ -30,7 +30,6 @@ import {
 import { SearchIcon } from '@chakra-ui/icons';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { authApi, useAppSelector } from '../../../utils';
 import { useDisclosure } from '@chakra-ui/react';
 import { formatDistanceToNow } from 'date-fns';
 import { UserTable, AddUser } from '..';
@@ -39,10 +38,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { UserState } from '../../../features';
 import { UpdateStatusFormData } from './types';
 import { useForm } from 'react-hook-form';
-import { Loading } from '../../../components';
 import TaskTable from './TaskTable';
 import { TaskFormData } from '../task/types';
-import { useFetchProject } from '../../../hooks/users/useFetchProject';
+import { useFetchProject } from '@hooks/users';
+import { Loading } from '@components/ui';
+import { useAppSelector } from '@utils/redux';
+import { authApi } from '@utils/axios';
 
 export default function ProjectPage() {
   let queryClient = useQueryClient();

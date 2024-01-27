@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Checkbox } from '@chakra-ui/react';
-import { authApi } from '../../../utils';
 import { useQueryClient } from '@tanstack/react-query';
+import { authApi } from '@utils/axios';
 
 interface TaskCheckboxProps {
   id: number;

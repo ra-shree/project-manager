@@ -16,10 +16,10 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import { authApi } from '../../utils';
 import { UserState, resetUser } from '../../features';
+import { authApi } from '@utils/axios';
 
 interface Links {
   name: string;
@@ -45,7 +45,7 @@ const UserLinks: Links[] = [
   { name: 'Tasks', path: '/user/tasks' },
 ];
 
-export default function Navbar() {
+export function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
   const userInfo = useSelector((state: any) => {

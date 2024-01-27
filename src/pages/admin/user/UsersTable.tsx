@@ -18,9 +18,9 @@ import {
 } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { useDisclosure } from '@chakra-ui/react';
-import { authApi } from '../../../utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { UserFormData } from './types';
+import { authApi } from '@utils/axios';
 
 export default function UsersTable({
   TableColumns,

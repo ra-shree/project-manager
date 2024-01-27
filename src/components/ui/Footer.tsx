@@ -60,7 +60,7 @@ const SocialButton = ({
   );
 };
 
-export default function Footer() {
+export function Footer() {
   return (
     <Box
       bg={useColorModeValue('gray.50', 'gray.900')}

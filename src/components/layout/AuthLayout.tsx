@@ -1,11 +1,11 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
-import { Navbar, Footer, Loading } from '..';
 import { setUser } from '../../features';
-import { authApi } from '../../utils';
+import { Footer, Loading, Navbar } from '@components/ui';
+import { authApi } from '@utils/axios';
 
-export default function AuthLayout() {
+export function AuthLayout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

@@ -1,6 +1,6 @@
 import { Flex, Spinner } from '@chakra-ui/react';
 
-export default function Loading() {
+export function Loading() {
   return (
     <Flex
       className="flex items-center justify-center"

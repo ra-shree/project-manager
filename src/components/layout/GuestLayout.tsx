@@ -1,7 +1,7 @@
+import { Footer, Navbar } from '@components/ui';
 import { Outlet } from 'react-router-dom';
-import { Navbar, Footer } from '..';
 
-export default function GuestLayout() {
+export function GuestLayout() {
   return (
     <>
       <Navbar />

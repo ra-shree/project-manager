@@ -16,8 +16,8 @@ import {
 import z, { ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { api } from '../../utils';
 import { useEffect, useState } from 'react';
+import { api } from '@utils/axios';
 
 interface SignInFormData {
   email: string;

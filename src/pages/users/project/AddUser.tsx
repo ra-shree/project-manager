@@ -16,9 +16,9 @@ import z, { ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { authApi } from '../../../utils';
 import { AddMemberFormData } from './types';
-import { useFetchDeveloper } from '../../../hooks/users/useFetchDeveloper';
+import { useFetchDeveloper } from '@hooks/users';
+import { authApi } from '@utils/axios';
 
 export default function AddUser({
   isOpen,

@@ -11,11 +11,11 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { authApi } from '../../../utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TaskFormData } from './types.d';
 import { AxiosResponse } from 'axios';
 import { useEffect } from 'react';
+import { authApi } from '@utils/axios';
 
 export default function TaskForm({
   updateTask,

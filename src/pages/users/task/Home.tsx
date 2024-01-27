@@ -14,8 +14,8 @@ import { useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
 import { TasksTable, TaskForm } from '..';
 import { TaskFormData } from './types.d';
-import { Loading } from '../../../components';
-import { useFetchTasks } from '../../../hooks/users/useFetchTasks';
+import { useFetchTasks } from '@hooks/users';
+import { Loading } from '@components/ui';
 
 export default function Home() {
   const [updateTask, setUpdateTask] = useState<TaskFormData>();

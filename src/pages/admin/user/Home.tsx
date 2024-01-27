@@ -15,8 +15,8 @@ import { UserForm, UsersTable } from '..';
 import { useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
 import { UserFormData } from './types';
-import { Loading } from '../../../components';
-import { useFetchUsers } from '../../../hooks/admin/useFetchUsers';
+import { useFetchUsers } from '@hooks/admin';
+import { Loading } from '@components/ui';
 
 export default function Home() {
   const [userId, setUserId] = useState<number | null>(null);

@@ -10,12 +10,14 @@ import {
   StackDivider,
   Text,
 } from '@chakra-ui/react';
-import { Loading } from '../../components';
 import { formatDistanceToNow } from 'date-fns';
-import { useFetchReport } from '../../hooks/admin/useFetchReport';
-import { useFetchProjectSummary } from '../../hooks/admin/useFetchProjectSummary';
-import { useFetchTaskSummary } from '../../hooks/admin/useFetchTaskSymmary';
-import { useFetchUpdatedProjectSummary } from '../../hooks/admin/useFetchUpdatedProjectSummary';
+import {
+  useFetchProjectSummary,
+  useFetchReport,
+  useFetchTaskSummary,
+  useFetchUpdatedProjectSummary,
+} from '@hooks/admin';
+import { Loading } from '@components/ui';
 
 const headingStyle = {
   fontWeight: 'bolder',
