@@ -24,7 +24,7 @@ const headingStyle = {
   fontSize: '1.8rem',
 };
 
-export function AdminDashboard() {
+export function AdminDashboardPage() {
   const { data: report, isSuccess: reportFetchSuccess } = useFetchReport();
   const { data: projectSummary, isSuccess: projectSummaryFetchSuccess } =
     useFetchProjectSummary();

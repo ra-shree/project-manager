@@ -17,7 +17,7 @@ import { TaskFormData } from './task/types';
 import { useFetchTasks } from '@hooks/users';
 import { Loading } from '@components/ui';
 
-export function TasksPage() {
+export function UserTasksPage() {
   const [updateTask, setUpdateTask] = useState<TaskFormData>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: tasks, isSuccess } = useFetchTasks();

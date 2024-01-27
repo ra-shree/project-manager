@@ -18,7 +18,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import { UserState, resetUser } from '../../features';
+import { UserState, resetUser } from '../../store';
 import { authApi } from '@utils/axios';
 
 interface Links {

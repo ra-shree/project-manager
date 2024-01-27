@@ -6,16 +6,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import './index.css';
-import { AdminDashboard, ProjectsPage, UsersPage } from '@pages/admin';
+import { ProjectsPage, UsersPage } from '@pages/admin';
 import { AuthLayout, GuestLayout } from '@components/layout';
 import { store } from './utils';
 import { HomePage, SigninPage } from '@pages/guest';
 import {
-  UserDashboardPage,
-  ManagerDashboardPage,
   ProjectDetailPage,
-  TasksPage,
+  UserProjectsPage,
+  UserTasksPage,
 } from '@pages/users';
+import DashboardPage from '@pages/DashboardPage';
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -34,17 +34,15 @@ const router = createBrowserRouter([
     path: '/',
     element: <AuthLayout />,
     children: [
-      { path: '/dashboard', element: <UserDashboardPage /> },
-      { path: '/manager/dashboard', element: <ManagerDashboardPage /> },
-      { path: '/user/projects', element: <ProjectsPage /> },
+      { path: '/dashboard', element: <DashboardPage /> },
+      { path: '/user/projects', element: <UserProjectsPage /> },
       {
         path: '/user/projects/:current_project_id',
         element: <ProjectDetailPage />,
       },
-      { path: '/user/tasks', element: <TasksPage /> },
+      { path: '/user/tasks', element: <UserTasksPage /> },
       { path: '/admin/users', element: <UsersPage /> },
       { path: '/admin/projects', element: <ProjectsPage /> },
-      { path: '/admin/dashboard', element: <AdminDashboard /> },
     ],
   },
 ]);

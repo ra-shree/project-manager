@@ -1,6 +1,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/node,visualstudiocode,phpstorm+all,react
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,visualstudiocode,phpstorm+all,react
 
+### IDE ###
+.idea/
+.vscode/
+
 ### Node ###
 # Logs
 logs

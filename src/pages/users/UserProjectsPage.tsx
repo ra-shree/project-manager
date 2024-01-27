@@ -3,7 +3,7 @@ import { DataTable } from '.';
 import { useFetchProjects } from '@hooks/users';
 import { Loading } from '@components/ui';
 
-export function ProjectsPage(): JSX.Element {
+export function UserProjectsPage(): JSX.Element {
   const { data: projects, isSuccess } = useFetchProjects();
 
   return (

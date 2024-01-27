@@ -1,8 +1,8 @@
 export * from './UserDashboardPage';
 export * from './ManagerDashboardPage';
-export * from './ProjectsPage';
+export * from './UserProjectsPage';
 export * from './ProjectDetailPage';
-export * from './TasksPage';
+export * from './UserTasksPage';
 export { default as DataTable } from './project/DataTable';
 export { default as TasksTable } from './task/TasksTable';
 export { default as TaskCheckbox } from './task/TaskCheckbox';

@@ -54,7 +54,7 @@ export default function ProjectForm({
   });
 
   const { data, isSuccess } = useQuery(['managers'], async () => {
-    const response = await authApi.get('/api/admin/users/manager');
+    const response = await authApi.get('/api/admin/users/managers');
     return response.data;
   });
 

@@ -35,7 +35,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { UserTable, AddUser } from '.';
 import z, { ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { UserState } from '../../features';
+import { UserState } from '../../store';
 import { UpdateStatusFormData } from './project/types';
 import { useForm } from 'react-hook-form';
 import TaskTable from './project/TaskTable';

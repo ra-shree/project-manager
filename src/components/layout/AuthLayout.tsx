@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../features';
+import { setUser } from '../../store';
 import { Footer, Loading, Navbar } from '@components/ui';
 import { authApi } from '@utils/axios';
 
@@ -31,7 +31,7 @@ export function AuthLayout() {
   );
 
   if (userQuery.isError) {
-    navigate('/login');
+    navigate('/signin');
   }
 
   if (userQuery.isFetching) {
