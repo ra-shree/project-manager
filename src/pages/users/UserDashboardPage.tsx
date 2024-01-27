@@ -25,7 +25,7 @@ const headingStyle = {
   fontSize: '1.8rem',
 };
 
-export default function UserDashboard() {
+export function UserDashboardPage() {
   const userInfo = useSelector((state: any) => state.user);
   const navigate = useNavigate();
 

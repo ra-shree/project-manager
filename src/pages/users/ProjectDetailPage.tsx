@@ -32,20 +32,20 @@ import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useDisclosure } from '@chakra-ui/react';
 import { formatDistanceToNow } from 'date-fns';
-import { UserTable, AddUser } from '..';
+import { UserTable, AddUser } from '.';
 import z, { ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { UserState } from '../../../features';
-import { UpdateStatusFormData } from './types';
+import { UserState } from '../../features';
+import { UpdateStatusFormData } from './project/types';
 import { useForm } from 'react-hook-form';
-import TaskTable from './TaskTable';
-import { TaskFormData } from '../task/types';
+import TaskTable from './project/TaskTable';
+import { TaskFormData } from './task/types';
 import { useFetchProject } from '@hooks/users';
 import { Loading } from '@components/ui';
 import { useAppSelector } from '@utils/redux';
 import { authApi } from '@utils/axios';
 
-export default function ProjectPage() {
+export function ProjectDetailPage() {
   let queryClient = useQueryClient();
   let { current_project_id: projectId } = useParams();
   const memberSelectModal = useDisclosure();

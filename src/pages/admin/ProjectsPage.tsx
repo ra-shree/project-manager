@@ -11,14 +11,15 @@ import {
   ModalCloseButton,
   Spacer,
 } from '@chakra-ui/react';
-import { ProjectsTable, ProjectForm } from '..';
 import { useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
-import { ProjectFormData } from './types';
+import { ProjectFormData } from './project/types';
 import { useFetchProjects } from '@hooks/admin';
 import { Loading } from '@components/ui';
+import ProjectsTable from './project/ProjectsTable';
+import ProjectForm from './project/Create';
 
-export default function Home() {
+export function ProjectsPage() {
   const [projectId, setProjectId] = useState<number | null>(null);
   const [updateProject, setUpdateProject] = useState<ProjectFormData>();
   const { isOpen, onOpen, onClose } = useDisclosure();

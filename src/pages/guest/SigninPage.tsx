@@ -24,7 +24,7 @@ interface SignInFormData {
   password: string;
 }
 
-export default function SignInForm() {
+export function SigninPage() {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 

@@ -5,18 +5,17 @@ import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { SignInForm } from '@pages/SignIn';
-import { HomeUser, HomeProject, AdminDashboard } from '@pages/admin';
-import {
-  Projects,
-  ProjectPage,
-  Tasks,
-  UserDashboard,
-  ManagerDashboard,
-} from './pages/users';
 import './index.css';
+import { AdminDashboard, ProjectsPage, UsersPage } from '@pages/admin';
 import { AuthLayout, GuestLayout } from '@components/layout';
-import { store } from '@utils/store';
+import { store } from './utils';
+import { HomePage, SigninPage } from '@pages/guest';
+import {
+  UserDashboardPage,
+  ManagerDashboardPage,
+  ProjectDetailPage,
+  TasksPage,
+} from '@pages/users';
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -24,24 +23,27 @@ const router = createBrowserRouter([
     path: '/',
     element: <GuestLayout />,
     children: [
-      { path: '/', element: <SignInForm /> },
+      { path: '/', element: <HomePage /> },
       { path: '/about', element: <div>About</div> },
       { path: '/pricing', element: <div>Pricing</div> },
       { path: '/contact', element: <div>Contact</div> },
-      { path: '/signin', element: <SignInForm /> },
+      { path: '/signin', element: <SigninPage /> },
     ],
   },
   {
     path: '/',
     element: <AuthLayout />,
     children: [
-      { path: '/dashboard', element: <UserDashboard /> },
-      { path: '/manager/dashboard', element: <ManagerDashboard /> },
-      { path: '/user/projects', element: <Projects /> },
-      { path: '/user/projects/:current_project_id', element: <ProjectPage /> },
-      { path: '/user/tasks', element: <Tasks /> },
-      { path: '/admin/users', element: <HomeUser /> },
-      { path: '/admin/projects', element: <HomeProject /> },
+      { path: '/dashboard', element: <UserDashboardPage /> },
+      { path: '/manager/dashboard', element: <ManagerDashboardPage /> },
+      { path: '/user/projects', element: <ProjectsPage /> },
+      {
+        path: '/user/projects/:current_project_id',
+        element: <ProjectDetailPage />,
+      },
+      { path: '/user/tasks', element: <TasksPage /> },
+      { path: '/admin/users', element: <UsersPage /> },
+      { path: '/admin/projects', element: <ProjectsPage /> },
       { path: '/admin/dashboard', element: <AdminDashboard /> },
     ],
   },

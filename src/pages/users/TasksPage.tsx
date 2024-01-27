@@ -12,15 +12,14 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
-import { TasksTable, TaskForm } from '..';
-import { TaskFormData } from './types.d';
+import { TasksTable, TaskForm } from '.';
+import { TaskFormData } from './task/types';
 import { useFetchTasks } from '@hooks/users';
 import { Loading } from '@components/ui';
 
-export default function Home() {
+export function TasksPage() {
   const [updateTask, setUpdateTask] = useState<TaskFormData>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const { data: tasks, isSuccess } = useFetchTasks();
 
   return (

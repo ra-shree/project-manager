@@ -11,11 +11,12 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { TaskFormData } from './types.d';
 import { AxiosResponse } from 'axios';
 import { useEffect } from 'react';
 import { authApi } from '@utils/axios';
+import { useFetchDeveloper } from '@hooks/users';
 
 export default function TaskForm({
   updateTask,
@@ -43,35 +44,9 @@ export default function TaskForm({
     resolver: zodResolver(schema),
   });
 
-  const developerQuery = useQuery(['project.developers'], async () => {
-    const response = await authApi.get(
-      `/api/user/projects/${updateTask?.project_id}/members`
-    );
-    return response.data;
+  const { data: developers, isSuccess } = useFetchDeveloper({
+    projectId: updateTask?.project_id.toString(),
   });
-
-  // const [projectsQuery, developerQuery] = useQueries({
-  //   queries: [
-  //     {
-  //       queryKey: [`projects`],
-  //       queryFn: async () => {
-  //         const response = await authApi.get(`/api/user/projects`);
-  //         return response.data;
-  //       },
-  //     },
-
-  //     {
-  //       queryKey: [`project.developers`],
-  //       queryFn: async () => {
-  //         // const response = await authApi.get(`/api/user/users/developer`);
-  //         const response = await authApi.get(
-  //           `/api/user/projects/${updateTask?.project_id}/members`
-  //         );
-  //         return response.data;
-  //       },
-  //     },
-  //   ],
-  // });
 
   async function onSubmit(values: TaskFormData) {
     try {
@@ -129,22 +104,6 @@ export default function TaskForm({
           isRequired
           hidden
         />
-        {/* <Select
-          id="project_id"
-          placeholder="Select a Project"
-          {...register('project_id', { valueAsNumber: true })}
-          isInvalid={errors.project_id ? true : false}
-          isRequired>
-          {projectsQuery.isSuccess ? (
-            projectsQuery.data.map((data: any) => (
-              <option key={data.id} value={data.id}>
-                {data.title}
-              </option>
-            ))
-          ) : (
-            <Spinner size="xl" />
-          )}
-        </Select> */}
         <FormErrorMessage>
           {errors.project_id && errors.project_id?.message?.toString()}
         </FormErrorMessage>
@@ -169,8 +128,8 @@ export default function TaskForm({
           placeholder="Select a Developer"
           {...register('user_id', { valueAsNumber: true })}
           isInvalid={errors.user_id ? true : false}>
-          {developerQuery.isSuccess ? (
-            developerQuery.data.map((data: any) => (
+          {isSuccess ? (
+            developers?.map((data: any) => (
               <option key={data.id} value={data.id}>
                 {data.first_name + ' ' + data.last_name}
               </option>

@@ -11,14 +11,15 @@ import {
   ModalCloseButton,
   Spacer,
 } from '@chakra-ui/react';
-import { UserForm, UsersTable } from '..';
 import { useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
-import { UserFormData } from './types';
+import { UserFormData } from './user/types';
 import { useFetchUsers } from '@hooks/admin';
 import { Loading } from '@components/ui';
+import UsersTable from './user/UsersTable';
+import UserForm from './user/Create';
 
-export default function Home() {
+export function UsersPage() {
   const [userId, setUserId] = useState<number | null>(null);
   const [updateUser, setUpdateUser] = useState<UserFormData>();
   const { isOpen, onOpen, onClose } = useDisclosure();

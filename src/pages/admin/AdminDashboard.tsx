@@ -24,12 +24,12 @@ const headingStyle = {
   fontSize: '1.8rem',
 };
 
-export default function AdminDashboard() {
+export function AdminDashboard() {
   const { data: report, isSuccess: reportFetchSuccess } = useFetchReport();
-  const { data: newProject, isSuccess: newProjectFetchSuccess } =
+  const { data: projectSummary, isSuccess: projectSummaryFetchSuccess } =
     useFetchProjectSummary();
 
-  const { data: newTask, isSuccess: newTaskFetchSuccess } =
+  const { data: taskSummary, isSuccess: taskSummaryFetchSuccess } =
     useFetchTaskSummary();
 
   const { data: updatedProject, isSuccess: updatedProjectFetchSuccess } =
@@ -94,8 +94,8 @@ export default function AdminDashboard() {
 
             <CardBody>
               <Stack divider={<StackDivider />} spacing="4">
-                {newProjectFetchSuccess ? (
-                  newProject?.data?.map((project: any) => {
+                {projectSummaryFetchSuccess ? (
+                  projectSummary?.data?.map((project: any) => {
                     return (
                       <Box>
                         <Heading size="md">{project?.title}</Heading>
@@ -166,8 +166,8 @@ export default function AdminDashboard() {
 
             <CardBody>
               <Stack divider={<StackDivider />} spacing="4">
-                {newTaskFetchSuccess ? (
-                  newTask?.map((task: any) => {
+                {taskSummaryFetchSuccess && Array.isArray(taskSummary) ? (
+                  taskSummary?.map((task: any) => {
                     return (
                       <Box>
                         <Heading size="md">{task?.title}</Heading>

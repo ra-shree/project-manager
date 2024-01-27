@@ -1,9 +1,9 @@
 import { Box, Heading, Flex, Spacer } from '@chakra-ui/react';
-import { DataTable } from '..';
+import { DataTable } from '.';
 import { useFetchProjects } from '@hooks/users';
 import { Loading } from '@components/ui';
 
-export default function Home(): JSX.Element {
+export function ProjectsPage(): JSX.Element {
   const { data: projects, isSuccess } = useFetchProjects();
 
   return (
