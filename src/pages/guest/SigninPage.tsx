@@ -18,23 +18,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { api } from '@utils/axios';
-
-interface SignInFormData {
-  email: string;
-  password: string;
-}
+import { SigninFormData } from '@interfaces/forms.interface';
 
 export function SigninPage() {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  async function onSubmit(values: SignInFormData) {
+  async function onSubmit(values: SigninFormData) {
     try {
       let userInfo = await api.post('/api/login', values);
-      console.log(userInfo);
+
       if (userInfo.data.message == 'Authenticated') {
         localStorage.setItem('token', userInfo.data.token);
-        document.location.href = '/dashboard';
+        window.location.href = '/dashboard';
       }
     } catch (err: any) {
       setError(true);
@@ -51,7 +47,7 @@ export function SigninPage() {
     }
   }, [error]);
 
-  const schema: ZodType<SignInFormData> = z.object({
+  const schema: ZodType<SigninFormData> = z.object({
     email: z.string().email(),
     password: z.string().min(8).max(255),
   });
@@ -60,7 +56,7 @@ export function SigninPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignInFormData>({
+  } = useForm<SigninFormData>({
     resolver: zodResolver(schema),
   });
 

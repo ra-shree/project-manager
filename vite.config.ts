@@ -4,7 +4,6 @@ import { resolve } from 'path';
 
 const root = resolve(__dirname, 'src');
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
@@ -12,10 +11,13 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@api': resolve(root, 'api'),
       '@components': resolve(root, 'components'),
       '@hooks': resolve(root, 'hooks'),
       '@pages': resolve(root, 'pages'),
       '@utils': resolve(root, 'utils'),
+      '@interfaces': resolve(root, 'interfaces'),
+      '@store': resolve(root, 'store'),
     },
   },
 });

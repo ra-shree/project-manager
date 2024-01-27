@@ -1,14 +1,7 @@
+import { UserState } from '@interfaces/state.interface';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@utils/store';
-
-export interface UserState {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: string;
-}
 
 const initialState: UserState = {
   id: 0,

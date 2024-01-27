@@ -15,9 +15,9 @@ import { z, ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ProjectFormData } from './types';
 import { AxiosResponse } from 'axios';
 import { authApi } from '@utils/axios';
+import { ProjectFormData } from '@interfaces/forms.interface';
 
 const projectStatus = ['Draft', 'On Hold', 'In Progress', 'Completed'];
 

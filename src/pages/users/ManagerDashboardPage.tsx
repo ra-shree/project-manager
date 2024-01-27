@@ -11,8 +11,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { formatDistanceToNow } from 'date-fns';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import {
   useFetchProjectSummary,
   useFetchReport,
@@ -26,17 +24,6 @@ const headingStyle = {
 };
 
 export function ManagerDashboardPage() {
-  const userInfo = useSelector((state: any) => state.user);
-  const navigate = useNavigate();
-
-  if (userInfo.role === 'admin') {
-    navigate('/admin/dashboard');
-  }
-
-  if (userInfo.role === 'developer') {
-    navigate('/dashboard');
-  }
-
   const { data: report, isSuccess: reportFetchSuccess } = useFetchReport();
   const { data: projectSummary, isSuccess: projectFetchSuccess } =
     useFetchProjectSummary();

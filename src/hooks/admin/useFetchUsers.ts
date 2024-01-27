@@ -1,12 +1,9 @@
+import { fetchUsers } from '@api/admin';
 import { useQuery } from '@tanstack/react-query';
-import { authApi } from '@utils/axios';
 
 export const useFetchUsers = () => {
   return useQuery({
     queryKey: ['users'],
-    queryFn: async () => {
-      const response = await authApi.get('/api/admin/users');
-      return response.data;
-    },
+    queryFn: fetchUsers,
   });
 };

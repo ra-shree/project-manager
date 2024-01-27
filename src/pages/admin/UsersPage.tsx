@@ -13,11 +13,11 @@ import {
 } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
-import { UserFormData } from './user/types';
 import { useFetchUsers } from '@hooks/admin';
 import { Loading } from '@components/ui';
 import UsersTable from './user/UsersTable';
 import UserForm from './user/Create';
+import { UserFormData } from '@interfaces/forms.interface';
 
 export function UsersPage() {
   const [userId, setUserId] = useState<number | null>(null);

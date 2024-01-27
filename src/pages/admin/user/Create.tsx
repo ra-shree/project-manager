@@ -16,10 +16,10 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { z, ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { UserFormData } from './types.d';
 import { AxiosResponse } from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
 import { authApi } from '@utils/axios';
+import { UserFormData } from '@interfaces/forms.interface';
 
 export default function UserForm({
   updateUser,

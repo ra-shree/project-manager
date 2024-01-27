@@ -1,12 +1,9 @@
+import { fetchProjects } from '@api/admin';
 import { useQuery } from '@tanstack/react-query';
-import { authApi } from '@utils/axios';
 
 export const useFetchProjects = () => {
   return useQuery({
     queryKey: ['projects'],
-    queryFn: async () => {
-      const response = await authApi.get('/api/admin/projects');
-      return response.data;
-    },
+    queryFn: fetchProjects,
   });
 };

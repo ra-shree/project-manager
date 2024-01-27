@@ -26,6 +26,7 @@ const headingStyle = {
 
 export function AdminDashboardPage() {
   const { data: report, isSuccess: reportFetchSuccess } = useFetchReport();
+
   const { data: projectSummary, isSuccess: projectSummaryFetchSuccess } =
     useFetchProjectSummary();
 
@@ -95,7 +96,7 @@ export function AdminDashboardPage() {
             <CardBody>
               <Stack divider={<StackDivider />} spacing="4">
                 {projectSummaryFetchSuccess ? (
-                  projectSummary?.data?.map((project: any) => {
+                  projectSummary?.map((project: any) => {
                     return (
                       <Box>
                         <Heading size="md">{project?.title}</Heading>

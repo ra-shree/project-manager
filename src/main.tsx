@@ -1,11 +1,10 @@
 import React from 'react';
-import { ChakraProvider } from '@chakra-ui/react';
 import ReactDOM from 'react-dom/client';
+import { ChakraProvider } from '@chakra-ui/react';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import './index.css';
 import { ProjectsPage, UsersPage } from '@pages/admin';
 import { AuthLayout, GuestLayout } from '@components/layout';
 import { store } from './utils';
@@ -15,7 +14,8 @@ import {
   UserProjectsPage,
   UserTasksPage,
 } from '@pages/users';
-import DashboardPage from '@pages/DashboardPage';
+import './index.css';
+import { DashboardPage } from '@pages/DashboardPage';
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -23,7 +23,8 @@ const router = createBrowserRouter([
     path: '/',
     element: <GuestLayout />,
     children: [
-      { path: '/', element: <HomePage /> },
+      { path: '/', element: <SigninPage /> },
+      { path: '/home', element: <HomePage /> },
       { path: '/about', element: <div>About</div> },
       { path: '/pricing', element: <div>Pricing</div> },
       { path: '/contact', element: <div>Contact</div> },

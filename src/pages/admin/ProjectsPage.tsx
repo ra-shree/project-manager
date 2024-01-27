@@ -13,11 +13,11 @@ import {
 } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
-import { ProjectFormData } from './project/types';
 import { Loading } from '@components/ui';
 import ProjectsTable from './project/ProjectsTable';
 import ProjectForm from './project/Create';
 import { useFetchProjects } from '@hooks/users';
+import { ProjectFormData } from '@interfaces/forms.interface';
 
 export function ProjectsPage() {
   const [projectId, setProjectId] = useState<number | null>(null);

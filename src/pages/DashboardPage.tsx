@@ -1,20 +1,19 @@
-import { useAppSelector } from '@utils/redux';
-import { UserState } from 'features';
 import { AdminDashboardPage } from './admin';
 import { ManagerDashboardPage, UserDashboardPage } from './users';
+import { useAppSelector } from '@utils/redux';
 
-export default function DashboardPage() {
-  const user: UserState = useAppSelector((state: any) => state.user);
+export function DashboardPage() {
+  const user = useAppSelector((state: any) => state.user);
 
-  if (user.role == 'admin') {
+  if (user?.role == 'admin') {
     return <AdminDashboardPage />;
   }
 
-  if (user.role == 'developer') {
+  if (user?.role == 'developer') {
     return <UserDashboardPage />;
   }
 
-  if (user.role == 'manager') {
+  if (user?.role == 'manager') {
     return <ManagerDashboardPage />;
   }
 }
