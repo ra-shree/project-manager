@@ -13,21 +13,17 @@ import {
 } from '@chakra-ui/react';
 import { ProjectsTable, ProjectForm } from '..';
 import { useDisclosure } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
-import { authApi } from '../../../utils';
 import { useState } from 'react';
 import { ProjectFormData } from './types';
 import { Loading } from '../../../components';
+import { useFetchProjects } from '../../../hooks/admin/useFetchProjects';
 
 export default function Home() {
   const [projectId, setProjectId] = useState<number | null>(null);
   const [updateProject, setUpdateProject] = useState<ProjectFormData>();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { data, isSuccess } = useQuery(['projects'], async () => {
-    const response = await authApi.get('/api/admin/projects');
-    return response.data;
-  });
+  const { data: projects, isSuccess } = useFetchProjects();
 
   return (
     <>
@@ -59,7 +55,7 @@ export default function Home() {
             'Status',
             'Actions',
           ]}
-          TableData={data}
+          TableData={projects}
           onOpen={onOpen}
           projectId={projectId}
           setProjectId={setProjectId}

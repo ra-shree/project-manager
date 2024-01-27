@@ -12,23 +12,16 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useDisclosure } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
 import { TasksTable, TaskForm } from '..';
-import { authApi } from '../../../utils';
 import { TaskFormData } from './types.d';
 import { Loading } from '../../../components';
+import { useFetchTasks } from '../../../hooks/users/useFetchTasks';
 
 export default function Home() {
   const [updateTask, setUpdateTask] = useState<TaskFormData>();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { data, isSuccess } = useQuery({
-    queryKey: [`tasks`],
-    queryFn: async () => {
-      const response = await authApi.get(`/api/user/tasks`);
-      return response.data;
-    },
-  });
+  const { data: tasks, isSuccess } = useFetchTasks();
 
   return (
     <>
@@ -39,21 +32,11 @@ export default function Home() {
           </Heading>
         </Box>
         <Spacer />
-        {/* <Box>
-          <Button
-            colorScheme="whatsapp"
-            onClick={() => {
-              setUpdateTask(undefined);
-              onOpen();
-            }}>
-            Create New Task
-          </Button>
-        </Box> */}
       </Flex>
       {isSuccess ? (
         <TasksTable
           tableColumns={['Title', 'Assigned To', 'Description', 'Actions']}
-          tableData={data}
+          tableData={tasks}
           onOpen={onOpen}
           setUpdateTask={setUpdateTask}
         />

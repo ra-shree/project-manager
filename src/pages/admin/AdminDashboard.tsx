@@ -11,9 +11,11 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Loading } from '../../components';
-import { useQueries } from '@tanstack/react-query';
-import { authApi } from '../../utils';
 import { formatDistanceToNow } from 'date-fns';
+import { useFetchReport } from '../../hooks/admin/useFetchReport';
+import { useFetchProjectSummary } from '../../hooks/admin/useFetchProjectSummary';
+import { useFetchTaskSummary } from '../../hooks/admin/useFetchTaskSymmary';
+import { useFetchUpdatedProjectSummary } from '../../hooks/admin/useFetchUpdatedProjectSummary';
 
 const headingStyle = {
   fontWeight: 'bolder',
@@ -21,45 +23,15 @@ const headingStyle = {
 };
 
 export default function AdminDashboard() {
-  const [reportQuery, newProjectQuery, updatedProjectQuery, newTaskQuery] =
-    useQueries({
-      queries: [
-        {
-          queryKey: [`report.admin`],
-          queryFn: async () => {
-            const response = await authApi.get(`/api/admin/summary/count`);
-            return response.data;
-          },
-          cacheTime: 1 * 60 * 1000,
-        },
+  const { data: report, isSuccess: reportFetchSuccess } = useFetchReport();
+  const { data: newProject, isSuccess: newProjectFetchSuccess } =
+    useFetchProjectSummary();
 
-        {
-          queryKey: [`project.admin.new`],
-          queryFn: async () => {
-            const response = await authApi.get(
-              `/api/admin/summary/project/new`
-            );
-            return response.data;
-          },
-        },
-        {
-          queryKey: [`project.admin.updated`],
-          queryFn: async () => {
-            const response = await authApi.get(
-              `/api/admin/summary/project/updated`
-            );
-            return response.data;
-          },
-        },
-        {
-          queryKey: [`task.admin.new`],
-          queryFn: async () => {
-            const response = await authApi.get(`/api/admin/summary/task/new`);
-            return response.data;
-          },
-        },
-      ],
-    });
+  const { data: newTask, isSuccess: newTaskFetchSuccess } =
+    useFetchTaskSummary();
+
+  const { data: updatedProject, isSuccess: updatedProjectFetchSuccess } =
+    useFetchUpdatedProjectSummary();
 
   return (
     <Box style={{ padding: '1em 1em 1em 2em' }}>
@@ -75,34 +47,34 @@ export default function AdminDashboard() {
             <CardHeader>
               <Heading style={headingStyle}>Summary Report</Heading>
             </CardHeader>
-            {reportQuery.isSuccess ? (
+            {reportFetchSuccess ? (
               <CardBody>
                 <Stack divider={<StackDivider />} spacing="4">
                   <Box>
                     <Heading size="md">Users</Heading>
                     <Text pt="2" fontSize="md">
-                      Developers: {reportQuery?.data?.developers}
+                      Developers: {report?.developers}
                     </Text>
                     <Text pt="2" fontSize="md">
-                      Managers: {reportQuery?.data?.managers}
+                      Managers: {report?.managers}
                     </Text>
                   </Box>
                   <Box>
                     <Heading size="md">Projects</Heading>
                     <Text pt="2" fontSize="md">
-                      Completed: {reportQuery?.data?.completed_project_count}
+                      Completed: {report?.completed_project_count}
                     </Text>
                     <Text pt="2" fontSize="md">
-                      Ongoing: {reportQuery?.data?.ongoing_project_count}
+                      Ongoing: {report?.ongoing_project_count}
                     </Text>
                   </Box>
                   <Box>
                     <Heading size="md">Tasks</Heading>
                     <Text pt="2" fontSize="md">
-                      Completed: {reportQuery?.data?.completed_task_count}
+                      Completed: {report?.completed_task_count}
                     </Text>
                     <Text pt="2" fontSize="md">
-                      Incomplete: {reportQuery?.data?.incomplete_task_count}
+                      Incomplete: {report?.incomplete_task_count}
                     </Text>
                   </Box>
                 </Stack>
@@ -120,8 +92,8 @@ export default function AdminDashboard() {
 
             <CardBody>
               <Stack divider={<StackDivider />} spacing="4">
-                {newProjectQuery.isSuccess ? (
-                  newProjectQuery.data?.map((project: any) => {
+                {newProjectFetchSuccess ? (
+                  newProject?.data?.map((project: any) => {
                     return (
                       <Box>
                         <Heading size="md">{project?.title}</Heading>
@@ -156,8 +128,8 @@ export default function AdminDashboard() {
 
             <CardBody>
               <Stack divider={<StackDivider />} spacing="4">
-                {updatedProjectQuery.isSuccess ? (
-                  updatedProjectQuery.data.map((project: any) => {
+                {updatedProjectFetchSuccess ? (
+                  updatedProject?.map((project: any) => {
                     return (
                       <Box>
                         <Heading size="md">{project?.title}</Heading>
@@ -192,8 +164,8 @@ export default function AdminDashboard() {
 
             <CardBody>
               <Stack divider={<StackDivider />} spacing="4">
-                {newTaskQuery.isSuccess ? (
-                  newTaskQuery.data.map((task: any) => {
+                {newTaskFetchSuccess ? (
+                  newTask?.map((task: any) => {
                     return (
                       <Box>
                         <Heading size="md">{task?.title}</Heading>
