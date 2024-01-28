@@ -35,7 +35,7 @@ const HomeLinks: Links[] = [
 ];
 
 const AdminLinks: Links[] = [
-  { name: 'Dashboard', path: '/admin/dashboard' },
+  { name: 'Dashboard', path: '/dashboard' },
   { name: 'Users', path: '/admin/users' },
   { name: 'Projects', path: '/admin/projects' },
 ];

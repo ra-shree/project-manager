@@ -17,8 +17,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { AddMemberFormData } from './types';
-import { useFetchDeveloper } from '@hooks/users';
 import { authApi } from '@utils/axios';
+import { useFetchDeveloper } from '@hooks/users';
 
 export default function AddUser({
   isOpen,
@@ -51,7 +51,10 @@ export default function AddUser({
     try {
       const res = await authApi.post(`/api/user/members`, values);
       if (res.data == 'Developer Added To Project') {
-        queryClient.invalidateQueries(['project']);
+        queryClient.invalidateQueries([
+          'project',
+          currentProjectId?.toString(),
+        ]);
         queryClient.invalidateQueries(['project.developers', currentProjectId]);
       }
     } catch (err: any) {

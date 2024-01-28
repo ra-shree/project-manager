@@ -22,9 +22,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { useDisclosure } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { ProjectFormData } from './types';
 import { authApi } from '@utils/axios';
-import { useAppSelector } from '@utils/redux';
+import { ProjectFormData } from '@interfaces/forms.interface';
 
 export default function ProjectsTable({
   TableColumns,

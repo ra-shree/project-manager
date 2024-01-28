@@ -6,6 +6,19 @@ export interface Project {
   manager_id: number;
   created_at: Date;
   updated_at: Date;
+  manager?: User | null;
+}
+
+export interface ProjectDetails {
+  id: number;
+  title: string;
+  description: string;
+  status: 'Draft' | 'In Progress' | 'Completed' | 'On Hold';
+  manager_id: number;
+  created_at: Date;
+  updated_at: Date;
+  members?: User[] | null;
+  tasks?: Task[] | null;
 }
 
 export interface Task {
@@ -17,18 +30,24 @@ export interface Task {
   project_id: number;
   created_at: Date;
   updated_at: Date;
+  assigned: User | null;
 }
 
-export interface Report {
-  admins: number | null;
-  developers: number | null;
-  managers: number | null;
-  ongoing_project_count: number | null;
-  completed_project_count: number | null;
-  incomplete_task_count: number | null;
-  project_count: number | null;
-  developer_count: number | null;
-  completed_task_count: number | null;
+export interface UserReport {
+  incomplete_task_count: number;
+  project_count: number;
+  developer_count: number;
+  completed_task_count: number;
+}
+
+export interface AdminReport {
+  admins: number;
+  developers: number;
+  managers: number;
+  ongoing_project_count: number;
+  completed_project_count: number;
+  completed_task_count: number;
+  incomplete_task_count: number;
 }
 
 export interface User {

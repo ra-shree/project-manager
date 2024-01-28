@@ -43,11 +43,7 @@ export default function UserTable({
           `api/user/members/${projectId}/remove/${userId}`
         );
         if (res.data == 'Member Removed') {
-          queryClient.invalidateQueries(['project']);
-          queryClient.invalidateQueries([
-            'project.developers',
-            projectId.toString(),
-          ]);
+          queryClient.invalidateQueries(['project', projectId.toString()]);
         }
       }
     } catch (err) {

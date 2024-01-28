@@ -35,7 +35,6 @@ import { formatDistanceToNow } from 'date-fns';
 import { UserTable, AddUser } from '.';
 import z, { ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { UserState } from '../../store';
 import { UpdateStatusFormData } from './project/types';
 import { useForm } from 'react-hook-form';
 import TaskTable from './project/TaskTable';
@@ -44,6 +43,7 @@ import { useFetchProject } from '@hooks/users';
 import { Loading } from '@components/ui';
 import { useAppSelector } from '@utils/redux';
 import { authApi } from '@utils/axios';
+import { UserState } from '@interfaces/state.interface';
 
 export function ProjectDetailPage() {
   let queryClient = useQueryClient();

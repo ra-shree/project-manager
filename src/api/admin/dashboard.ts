@@ -1,4 +1,4 @@
-import { Project, Task, Report } from '@interfaces/fetch.interface';
+import { Project, Task, AdminReport } from '@interfaces/fetch.interface';
 import { authApi } from '@utils/axios';
 
 export const fetchNewProjectSummary = async (): Promise<Project[]> => {
@@ -24,7 +24,7 @@ export const fetchTaskSummary = async (): Promise<Task[]> => {
   return response.data;
 };
 
-export const fetchReport = async (): Promise<Report> => {
+export const fetchReport = async (): Promise<AdminReport> => {
   const response = await authApi.get('/api/admin/summary');
   return response.data;
 };
