@@ -14,10 +14,11 @@ import { useState, useEffect } from 'react';
 import { z, ZodType } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { authApi } from '@utils/axios';
 import { ProjectFormData } from '@interfaces/forms.interface';
+import { useFetchManagers } from '@hooks/admin/useFetchManager';
 
 const projectStatus = ['Draft', 'On Hold', 'In Progress', 'Completed'];
 
@@ -53,10 +54,7 @@ export default function ProjectForm({
     resolver: zodResolver(schema),
   });
 
-  const { data, isSuccess } = useQuery(['managers'], async () => {
-    const response = await authApi.get('/api/admin/users/managers');
-    return response.data;
-  });
+  const { data: managers, isSuccess } = useFetchManagers();
 
   async function onSubmit(values: ProjectFormData) {
     try {
@@ -140,7 +138,7 @@ export default function ProjectForm({
           {...register('manager_id', { valueAsNumber: true })}
           isInvalid={errors.manager_id ? true : false}>
           {isSuccess &&
-            data.map((manager: any) => (
+            managers?.map((manager: any) => (
               <option key={manager.id} value={manager.id}>
                 {manager.first_name + ' ' + manager.last_name}
               </option>
